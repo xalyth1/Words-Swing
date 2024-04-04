@@ -1,10 +1,42 @@
-long,długi
-hedging,wykręcanie się, kręcenie (nie mówienie prawdy)
-panel,zespół, panel
-validation,legalizacja, uprawomocnienie, walidacja, konwalidacja
-painting,obraz, malowidło
 extraordinary,niezwykły, zadziwiający, zdumiewający (np. wydarzenie)
 interoperability,interoperacyjność (współdziałanie, efektywna współpraca np. między systemami, usługami), kompatybilność
 serendipity,zdolność do przypadkowych odkryć
 superfluous,zbędny (o wyjaśnieniach), nadmierny (o dekoracji)
 eloquent,elokwentny, wygadany
+frugal,oszczędny (o osobie, gospodarowaniu)
+aftermath,następstwo, wynik (np. wojny, klęski żywiołowej)
+snowflake,płatek śniegu
+resolve,rozwiązywać (np. problem)
+exempt ,wolny, zwolniony (nie muszący czegoś robić)
+resilience,zdolność zdrowienia, wytrzymałość, odporność
+ubiquitous,wszechobecny, powszechny, rozpowszechniony, wszędobylski
+perspicacious,bystry, przenikliwy, wnikliwy
+sesquipedalian,wielosylabowy
+obfuscate,zamaskować, utajnić, zaciemnić
+quixotic,donkiszotowski, idealistyczny, naiwny
+serendipity,zdolność do przypadkowych odkryć
+superfluous,zbędny (o wyjaśnieniach), nadmierny (o dekoracji)
+vicarious,zastępczy, delegowany, pośredni
+magnanimous,wielkoduszny, wspaniałomyślny
+esoteric,ezoteryczny, tajemny, tajemniczy, dziwaczny, osobliwy
+reticent,małomówny, powściągliwy w słowach
+mellifluous,słodki, melodyjny (np. głos)
+ostentatious,ostentacyjny (zachowanie, strój)
+ubiquity,wszechobecność
+languid,omdlewający, powolny, ospały, rozwlekły (np. ruch, głos, gest)
+resplendent,olśniewający, wspaniały, imponujący
+antediluvian,przedpotopowy
+insouciance,niefrasobliwość
+reliance,oparcie (na czymś lub na kimś), poleganie (na kimś), zdawanie (się na coś)
+inquiry,zapytanie, list z zapytaniem
+interfere,wtrącać się, kolidować
+exploratory,badawczy, poszukiwawczy, rozpoznawczy, odkrywczy
+rudimentary,elementarny, podstawowy, zasadniczy, szczątkowy, pierwotny, prymitywny
+intermittent,sporadyczny, przerywany (np. sen)
+cumbersome,nieefektywny (o działaniach), zawikłany (np. system), powolny (np. proces)
+exceedingly,niezmiernie, nadzwyczaj
+outermost,najbardziej oddalony, najdalszy
+arbitrarily,przypadkowo, losowo
+neatly,schludnie, starannie, porządnie (np. ubrać się, zapakować prezent)
+niceties,subtelność, niuans
+retrofitted,zmodernizować, unowocześnić
