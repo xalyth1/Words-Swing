@@ -2,8 +2,6 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS;
@@ -12,7 +10,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 public final class SwingElementsCreator {
     private static final SwingElementsCreator creator = new SwingElementsCreator();
 
-    private static final Dimension PREFFERED_BUTTON_DIMESNION = new Dimension(140, 40);
+    private static final Dimension PREFERRED_BUTTON_DIMENSION = new Dimension(140, 40);
 
     private SwingElementsCreator() { }
 
@@ -23,7 +21,7 @@ public final class SwingElementsCreator {
     JButton settings_Button() {
         JButton settingsButton = new JButton("Settings");
         settingsButton.setIcon(new ImageIcon("settingsIcon.png"));
-        settingsButton.setPreferredSize(PREFFERED_BUTTON_DIMESNION);
+        settingsButton.setPreferredSize(PREFERRED_BUTTON_DIMENSION);
         //settingsButton.addActionListener(e -> settingsPanel.setVisible(!settingsPanel.isVisible()));
         return settingsButton;
     }
@@ -46,7 +44,7 @@ public final class SwingElementsCreator {
 
     JButton add_Word_Button() {
         JButton addWordButton = new JButton("Add");
-        addWordButton.setPreferredSize(PREFFERED_BUTTON_DIMESNION);
+        addWordButton.setPreferredSize(PREFERRED_BUTTON_DIMENSION);
         return addWordButton;
     }
 
@@ -89,17 +87,18 @@ public final class SwingElementsCreator {
 
     JButton resetSelectedWords_Button() {
         JButton resetSelectedWordsButton = new JButton("Reset selection");
+        resetSelectedWordsButton.setToolTipText("Unselect all");
         return resetSelectedWordsButton;
     }
 
-    JComboBox lists_JComboBox(JFrame frame, JLabel currentListJLabel) {
+    JComboBox<String> lists_JComboBox(JFrame frame, JLabel currentListJLabel) {
         String[] listArray = new String[] {};
         Vector<String> v = new Vector<>();
         v.add("Default");
         v.add("Exam");
         v.add("...Add new list...");
 
-        JComboBox<String> jComboBox = new JComboBox(v);
+        JComboBox<String> jComboBox = new JComboBox<>(v);
         jComboBox.addActionListener(e -> {
             JComboBox<String> source = (JComboBox<String>) e.getSource();
             String selectedOption = (String) source.getSelectedItem();

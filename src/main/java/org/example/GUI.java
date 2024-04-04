@@ -20,7 +20,7 @@ public class GUI extends JFrame implements Runnable {
     private JButton addWordButton, deleteWordButton, settingsButton, resetSelectedWordsButton, addToListButton;
     private JTextField newWordTextField, searchTextField;
 
-    private JComboBox listJComboBox;
+    private JComboBox<String> listJComboBox;
 
     /**
      * Display
@@ -56,13 +56,6 @@ public class GUI extends JFrame implements Runnable {
 
     public GUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        UIManager.getLookAndFeelDefaults()
-                .put("defaultFont", new Font("Arial", Font.PLAIN, 28));
-
-        UIManager.put("ToolTip.font", new FontUIResource(new Font("SansSerif", Font.PLAIN, 18)));
-        //setSize(100, 100);
-        //setResizable(false);
-        //setLocationRelativeTo(null);
         setLocation(900,20);
         setPreferredSize(new Dimension(1350,1100));
         setTitle("Words - Now come easy!");
@@ -71,8 +64,22 @@ public class GUI extends JFrame implements Runnable {
         this.initializeGUIStructure();
         this.organizeLayout();
 
-        MockData.addWords(buttonsPanel, definitionTextArea);
 
+        (new MockData()).addWords(buttonsPanel, definitionTextArea);
+
+
+
+        this.addBehaviorToElements();
+
+
+        //repaint();
+        pack();
+        setVisible(true);
+    }
+
+    private void addBehaviorToElements() {
+        // behavior creator class or something like that
+        //BehaviorManager manager = BehaviorManager.getInstance();
         BehaviorManager.getInstance().setBehaviorTo_SearchTextField(searchTextField, buttonsPanel);
         BehaviorManager.getInstance().addBehaviorTo_Buttons(buttonsPanel, searchTextField, addToListButton);
         BehaviorManager.getInstance().addBehaviorTo_SettingsButton(settingsButton, settingsPanel);
@@ -82,9 +89,6 @@ public class GUI extends JFrame implements Runnable {
         BehaviorManager.getInstance().setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel);
 
 
-        //repaint();
-        pack();
-        setVisible(true);
     }
 
     private void initializeGUIStructure() {
@@ -102,9 +106,6 @@ public class GUI extends JFrame implements Runnable {
 
         this.currentListJLabel = creator.currentListJLabel();
         this.listJComboBox = creator.lists_JComboBox(this, currentListJLabel);
-        //https://stackoverflow.com/questions/7427511/java-swing-dynamic-jcombobox
-        //TODO make dynamic jcombo box as on this picture
-        // https://vaadin.com/docs/v8/framework/components/components-combobox
 
         this.addToListButton = creator.addSelectedToList_JButton();
 
@@ -116,9 +117,6 @@ public class GUI extends JFrame implements Runnable {
 
         this.displayModeDefault.setBackground(Color.LIGHT_GRAY);
         this.displayModeAlphabetical.setBackground(Color.LIGHT_GRAY);
-
-
-
 
         JFrame.setDefaultLookAndFeelDecorated(true);
     }
@@ -135,23 +133,17 @@ public class GUI extends JFrame implements Runnable {
     }
 
     private void associateElements() {
-
         meaningPanel.add(definitionScrollPane);
-
-
 
         //centralPanel.add(buttonsPanel);
         this.buttonsPanelScrollPane = SwingElementsCreator.getInstance().buttonsPanel_ScrollPane(buttonsPanel);
-        centralPanel.add(buttonsPanelScrollPane); // TODO Why not showin up?
-
+        centralPanel.add(buttonsPanelScrollPane);
 
         northPanel.add(currentListJLabel);
         currentListJLabel.setBorder(new EmptyBorder(0, 50, 0, 50));
         northPanel.add(deleteWordButton);
 
-
         southPanel.add(meaningPanel);
-        //
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = LINE_START;
@@ -196,16 +188,11 @@ public class GUI extends JFrame implements Runnable {
         row3.add(addToListButton);
         functionalitiesPanel.add(row3, gbc);
 
-
-
-
         //Menus
         submenu.add(addListMenuItem);
         menu.add(submenu);
         menuBar.add(menu);
         this.setJMenuBar(menuBar);
-
-
 
         southPanel.add(functionalitiesPanel);
         southPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -215,9 +202,6 @@ public class GUI extends JFrame implements Runnable {
 //        southPanel.add(addWordButton);
 //        southPanel.add(searchTextField);
 
-
-
-
         buttonsPanelScrollPane.revalidate();
         buttonsPanelScrollPane.repaint();
 
@@ -226,11 +210,6 @@ public class GUI extends JFrame implements Runnable {
     }
 
     private void createLayout() {
-
-
-
-
-
         BorderLayout mainLayout = new BorderLayout();
         getContentPane().setLayout(mainLayout);
         getContentPane().add(northPanel, BorderLayout.PAGE_START);
@@ -239,23 +218,11 @@ public class GUI extends JFrame implements Runnable {
         getContentPane().add(settingsPanel, BorderLayout.LINE_START);
     }
 
-
-    private void addBehaviorToElements() {
-        // behavior creator class or something like that
-        BehaviorManager manager = BehaviorManager.getInstance();
-
-    }
-
     private void organizeLayout() {
         createPanels();
         associateElements();
         createLayout();
-        addBehaviorToElements();
+        //addBehaviorToElements();
 
-
-        //TODO start here
     }
-
-
-
 }

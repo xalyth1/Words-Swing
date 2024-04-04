@@ -25,7 +25,7 @@ public class MockData {
     }
 
 
-    public static void addWords(JPanel panel, JTextArea definitionTextArea) {
+    public void addWords(JPanel panel, JTextArea definitionTextArea) {
         var words = loadWordsAndExplanationsFromCSV();
         for (Word w : words) {
             JButton b = w.getjButton();
@@ -36,10 +36,13 @@ public class MockData {
         MockData.words = words;
     }
 
-    public static List<Word> loadWordsAndExplanationsFromCSV() {
+    public List<Word> loadWordsAndExplanationsFromCSV() {
         List<Word> words = new ArrayList<>();
         try {
-            File myObj = new File("C:\\Users\\Pawel\\IdeaProjects\\Learning\\src\\swing\\WordsMockGUI\\wordsMock.txt");
+            //File myObj = new File("C:\\Users\\Pawel\\IdeaProjects\\Learning\\src\\swing\\WordsMockGUI\\wordsMock.txt");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File myObj = new File(classLoader.getResource("mock.txt").getFile());
+
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();

@@ -1,0 +1,10 @@
+long,długi
+hedging,wykręcanie się, kręcenie (nie mówienie prawdy)
+panel,zespół, panel
+validation,legalizacja, uprawomocnienie, walidacja, konwalidacja
+painting,obraz, malowidło
+extraordinary,niezwykły, zadziwiający, zdumiewający (np. wydarzenie)
+interoperability,interoperacyjność (współdziałanie, efektywna współpraca np. między systemami, usługami), kompatybilność
+serendipity,zdolność do przypadkowych odkryć
+superfluous,zbędny (o wyjaśnieniach), nadmierny (o dekoracji)
+eloquent,elokwentny, wygadany
