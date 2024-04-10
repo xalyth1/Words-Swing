@@ -1,4 +1,4 @@
-package org.example;
+package pl.com.words;
 
 import javax.swing.*;
 

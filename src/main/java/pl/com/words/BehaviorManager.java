@@ -1,11 +1,15 @@
-package org.example;
+package pl.com.words;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 
@@ -25,31 +29,26 @@ public class BehaviorManager {
                 JTextField textField = (JTextField) e.getSource();
                 String text = textField.getText();
                 System.out.println("TEXT: " + text );
-                //filter buttons:
                 filterButtons(text, buttonsPanel);
             }
         });
     }
 
-    void filterButtons(String text, JPanel buttonsPanel) {
+    private void filterButtons(String text, JPanel buttonsPanel) {
         var components = buttonsPanel.getComponents();
-
         if (text == null || text.equals("")) {
             for (Component c : components) {
                 c.setVisible(true);
             }
-        } else{
+        } else {
             for (Component c : components) {
                 if (c instanceof JButton b) {
                     int len = text.length();
                     b.setVisible(b.getText().length() >= len && b.getText().substring(0, len).equals(text));
                 }
             }
-
         }
     }
-
-
 
     void addBehaviorTo_Buttons(JPanel buttonsPanel, JTextField focusTextField, JButton addToListButton) {
         for (Component c : buttonsPanel.getComponents()) {
@@ -59,7 +58,6 @@ public class BehaviorManager {
                     String wordText = b.getText();
                     Word w = MockData.get(wordText);
                     manageWordSelection(w);
-
 
                     List<Word> selected = MockData.words.stream().unordered().filter(Word::isSelected).toList();
                     long selectedCount = selected.size();
@@ -82,7 +80,7 @@ public class BehaviorManager {
         }
     }
 
-    void manageWordSelection(Word w) {
+    private void manageWordSelection(Word w) {
         if (!MockData.SELECTION_MODE)
             return;
 
@@ -101,7 +99,6 @@ public class BehaviorManager {
 
     void addBehaviorTo_SettingsButton(JButton settingsButton, JPanel settingsPanel) {
         settingsButton.addActionListener(e -> settingsPanel.setVisible(settingsPanel.isVisible() ? false : true));
-
     }
 
     void setBehaviorTo_resetSelectedWordsButton(JButton resetSelectedWords, JButton addToListButton) {
@@ -114,7 +111,6 @@ public class BehaviorManager {
         }));
 
         resetSelectedWords.addActionListener(e -> addToListButton.setVisible(false));
-
     }
 
     void setBehaviorTo_DisplayMode(JPanel buttonsPanel, JRadioButton displayModeDefault, JRadioButton displayModeAlphabetical) {
@@ -130,9 +126,6 @@ public class BehaviorManager {
             MockData.words.get(3);
 
             rearrangeWordButtons(buttonsPanel);
-
-
-
         });
     }
 
@@ -157,7 +150,6 @@ public class BehaviorManager {
         deleteJButton.addActionListener(e -> {
             Component[] components = buttonsPanel.getComponents();
 
-
             if (MockData.isAnythingSelected) {
 
                 for (Component c : components) {
@@ -172,8 +164,4 @@ public class BehaviorManager {
 
         });
     }
-
-
-
-
 }

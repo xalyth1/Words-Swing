@@ -1,4 +1,4 @@
-package org.example;
+package pl.com.words;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ public final class SwingElementsCreator {
         return creator;
     }
 
-    JButton settings_Button() {
+    JButton settingsButton() {
         JButton settingsButton = new JButton("Settings");
         settingsButton.setIcon(new ImageIcon("settingsIcon.png"));
         settingsButton.setPreferredSize(PREFERRED_BUTTON_DIMENSION);
@@ -26,7 +26,7 @@ public final class SwingElementsCreator {
         return settingsButton;
     }
 
-    JTextField newWord_TextField() {
+    JTextField newWordTextField() {
         JTextField newWordTextField = new JTextField();
         newWordTextField.setPreferredSize(new Dimension(300,40));
         Font font = newWordTextField.getFont().deriveFont((float)28); //deriving a new font
@@ -34,7 +34,7 @@ public final class SwingElementsCreator {
         return newWordTextField;
     }
 
-    JTextField search_TextField() {
+    JTextField searchTextField() {
         JTextField searchTextField = new JTextField();
         searchTextField.setPreferredSize(new Dimension(300,40));
         Font font = searchTextField.getFont().deriveFont((float)28); //deriving a new font
@@ -42,13 +42,13 @@ public final class SwingElementsCreator {
         return searchTextField;
     }
 
-    JButton add_Word_Button() {
+    JButton addWordButton() {
         JButton addWordButton = new JButton("Add");
         addWordButton.setPreferredSize(PREFERRED_BUTTON_DIMENSION);
         return addWordButton;
     }
 
-    JButton delete_Word_Button() {
+    JButton deleteWordButton() {
         JButton deleteWordButton = new JButton("Delete selected");
         deleteWordButton.setToolTipText("Delete selected words from current list");
         deleteWordButton.setPreferredSize(new Dimension(240,40));
@@ -56,9 +56,7 @@ public final class SwingElementsCreator {
         return deleteWordButton;
     }
 
-
-
-    JTextArea definition_TextArea() {
+    JTextArea definitionTextArea() {
         JTextArea definitionTextArea = new JTextArea();
         definitionTextArea.setEditable(false);
         definitionTextArea.setLineWrap(true);
@@ -66,7 +64,7 @@ public final class SwingElementsCreator {
         return definitionTextArea;
     }
 
-    JScrollPane definition_ScrollPane(JTextArea jTextArea) {
+    JScrollPane definitionScrollPane(JTextArea jTextArea) {
         JScrollPane definitionScrollPane = new JScrollPane(jTextArea,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_ALWAYS);
         definitionScrollPane.setVisible(true);
@@ -75,7 +73,7 @@ public final class SwingElementsCreator {
     }
 
 
-    JScrollPane buttonsPanel_ScrollPane(JPanel buttonsPanel) {
+    JScrollPane buttonsPanelScrollPane(JPanel buttonsPanel) {
         JScrollPane buttonsPanelScrollPane = new JScrollPane(buttonsPanel,
                 VERTICAL_SCROLLBAR_ALWAYS,
                 HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -85,13 +83,13 @@ public final class SwingElementsCreator {
         return buttonsPanelScrollPane;
     }
 
-    JButton resetSelectedWords_Button() {
+    JButton resetSelectedWordsButton() {
         JButton resetSelectedWordsButton = new JButton("Reset selection");
         resetSelectedWordsButton.setToolTipText("Unselect all");
         return resetSelectedWordsButton;
     }
 
-    JComboBox<String> lists_JComboBox(JFrame frame, JLabel currentListJLabel) {
+    JComboBox<String> listsJComboBox(JFrame frame, JLabel currentListJLabel) {
         String[] listArray = new String[] {};
         Vector<String> v = new Vector<>();
         v.add("Default");
@@ -130,7 +128,7 @@ public final class SwingElementsCreator {
     private String showTextInputDialog(JFrame parent, String message) {
         JTextField textField = new JTextField();
         Object[] messageComponents = {message, textField};
-        int option = JOptionPane.showConfirmDialog(parent, messageComponents, "Input", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(parent, messageComponents, "Create new list", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             return textField.getText();
         }
@@ -142,19 +140,17 @@ public final class SwingElementsCreator {
 
     }
 
-
-    JButton clearList_JButton() {
+    JButton clearListJButton() {
         JButton clearListJButton = new JButton("Clear List");
         return clearListJButton;
     }
 
-    JButton addSelectedToList_JButton() {
+    JButton addSelectedToListJButton() {
         JButton addSelectedToList = new JButton("Add selected words to list");
         addSelectedToList.setPreferredSize(new Dimension(350, 40));
         addSelectedToList.setVisible(false);
         return addSelectedToList;
     }
-
 
     JMenuBar menuBar() {
         return new JMenuBar();
@@ -176,14 +172,7 @@ public final class SwingElementsCreator {
         return addNewListJMenuItem;
     }
 
-
     JLabel currentListJLabel() {
         return new JLabel("Current list: Default");
     }
-
-
-
-
-
-
 }

@@ -1,4 +1,4 @@
-package org.example;
+package pl.com.words;
 
 import javax.swing.*;
 import java.io.File;
@@ -24,7 +24,6 @@ public class MockData {
         return opt.get();
     }
 
-
     public void addWords(JPanel panel, JTextArea definitionTextArea) {
         var words = loadWordsAndExplanationsFromCSV();
         for (Word w : words) {
@@ -39,7 +38,6 @@ public class MockData {
     public List<Word> loadWordsAndExplanationsFromCSV() {
         List<Word> words = new ArrayList<>();
         try {
-            //File myObj = new File("C:\\Users\\Pawel\\IdeaProjects\\Learning\\src\\swing\\WordsMockGUI\\wordsMock.txt");
             ClassLoader classLoader = getClass().getClassLoader();
             File myObj = new File(classLoader.getResource("mock.txt").getFile());
 
@@ -56,15 +54,4 @@ public class MockData {
         }
         return words;
     }
-
-//    public static List<JButton> getWordButtons(JPanel buttonsPanel) {
-//        List<JButton> list = new ArrayList<>();
-//        for (Component c : buttonsPanel.getComponents()) {
-//            if (c instanceof JButton) {
-//                JButton b = (JButton) c;
-//                list.add(b);
-//
-//            }
-//        }
-//    }
 }

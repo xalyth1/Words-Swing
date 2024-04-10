@@ -14,7 +14,6 @@ perspicacious,bystry, przenikliwy, wnikliwy
 sesquipedalian,wielosylabowy
 obfuscate,zamaskować, utajnić, zaciemnić
 quixotic,donkiszotowski, idealistyczny, naiwny
-serendipity,zdolność do przypadkowych odkryć
 superfluous,zbędny (o wyjaśnieniach), nadmierny (o dekoracji)
 vicarious,zastępczy, delegowany, pośredni
 magnanimous,wielkoduszny, wspaniałomyślny

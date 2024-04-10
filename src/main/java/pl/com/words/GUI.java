@@ -1,8 +1,7 @@
-package org.example;
+package pl.com.words;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 
 import static java.awt.GridBagConstraints.LINE_START;
@@ -78,36 +77,33 @@ public class GUI extends JFrame implements Runnable {
     }
 
     private void addBehaviorToElements() {
-        // behavior creator class or something like that
-        //BehaviorManager manager = BehaviorManager.getInstance();
-        BehaviorManager.getInstance().setBehaviorTo_SearchTextField(searchTextField, buttonsPanel);
-        BehaviorManager.getInstance().addBehaviorTo_Buttons(buttonsPanel, searchTextField, addToListButton);
-        BehaviorManager.getInstance().addBehaviorTo_SettingsButton(settingsButton, settingsPanel);
-        BehaviorManager.getInstance().setBehaviorTo_DisplayMode(buttonsPanel, displayModeDefault, displayModeAlphabetical);
-        BehaviorManager.getInstance().setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
-        BehaviorManager.getInstance().setBehaviorToFileMenuItem(addListMenuItem);
-        BehaviorManager.getInstance().setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel);
-
-
+        BehaviorManager manager = BehaviorManager.getInstance();
+        manager.setBehaviorTo_SearchTextField(searchTextField, buttonsPanel);
+        manager.addBehaviorTo_Buttons(buttonsPanel, searchTextField, addToListButton);
+        manager.addBehaviorTo_SettingsButton(settingsButton, settingsPanel);
+        manager.setBehaviorTo_DisplayMode(buttonsPanel, displayModeDefault, displayModeAlphabetical);
+        manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
+        manager.setBehaviorToFileMenuItem(addListMenuItem);
+        manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel);
     }
 
     private void initializeGUIStructure() {
         SwingElementsCreator creator = SwingElementsCreator.getInstance();
-        this.settingsButton = creator.settings_Button();
-        this.addWordButton = creator.add_Word_Button();
-        this.deleteWordButton = creator.delete_Word_Button();
-        this.resetSelectedWordsButton = creator.resetSelectedWords_Button();
+        this.settingsButton = creator.settingsButton();
+        this.addWordButton = creator.addWordButton();
+        this.deleteWordButton = creator.deleteWordButton();
+        this.resetSelectedWordsButton = creator.resetSelectedWordsButton();
 
-        this.newWordTextField = creator.newWord_TextField();
-        this.searchTextField = creator.search_TextField();
+        this.newWordTextField = creator.newWordTextField();
+        this.searchTextField = creator.searchTextField();
 
-        this.definitionTextArea = creator.definition_TextArea();
-        this.definitionScrollPane = creator.definition_ScrollPane(this.definitionTextArea);
+        this.definitionTextArea = creator.definitionTextArea();
+        this.definitionScrollPane = creator.definitionScrollPane(this.definitionTextArea);
 
         this.currentListJLabel = creator.currentListJLabel();
-        this.listJComboBox = creator.lists_JComboBox(this, currentListJLabel);
+        this.listJComboBox = creator.listsJComboBox(this, currentListJLabel);
 
-        this.addToListButton = creator.addSelectedToList_JButton();
+        this.addToListButton = creator.addSelectedToListJButton();
 
         this.menuBar = creator.menuBar();
         this.menu = creator.menu();
@@ -136,7 +132,7 @@ public class GUI extends JFrame implements Runnable {
         meaningPanel.add(definitionScrollPane);
 
         //centralPanel.add(buttonsPanel);
-        this.buttonsPanelScrollPane = SwingElementsCreator.getInstance().buttonsPanel_ScrollPane(buttonsPanel);
+        this.buttonsPanelScrollPane = SwingElementsCreator.getInstance().buttonsPanelScrollPane(buttonsPanel);
         centralPanel.add(buttonsPanelScrollPane);
 
         northPanel.add(currentListJLabel);
@@ -223,6 +219,5 @@ public class GUI extends JFrame implements Runnable {
         associateElements();
         createLayout();
         //addBehaviorToElements();
-
     }
 }
