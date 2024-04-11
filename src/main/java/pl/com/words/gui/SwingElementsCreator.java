@@ -1,4 +1,4 @@
-package pl.com.words;
+package pl.com.words.gui;
 
 import javax.swing.*;
 import java.awt.*;

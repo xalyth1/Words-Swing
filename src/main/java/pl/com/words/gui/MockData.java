@@ -1,4 +1,6 @@
-package pl.com.words;
+package pl.com.words.gui;
+
+import pl.com.words.model.Word;
 
 import javax.swing.*;
 import java.io.File;
@@ -11,7 +13,7 @@ import java.util.Scanner;
 public class MockData {
     static List<Word> words;
 
-    static boolean SELECTION_MODE = false;
+    static boolean SELECTION_MODE;
 
     static boolean isAnythingSelected = false;
 

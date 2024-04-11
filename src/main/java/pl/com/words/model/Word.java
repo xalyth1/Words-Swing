@@ -1,4 +1,4 @@
-package pl.com.words;
+package pl.com.words.model;
 
 import javax.swing.*;
 
@@ -12,7 +12,7 @@ public class Word implements Comparable<Word>{
     private final JButton jButton;
 
     /**
-     * If this Word is Selected via jButton in GUI
+     * Is this Word is Selected via jButton in GUI
      */
     private boolean isSelected = false;
 

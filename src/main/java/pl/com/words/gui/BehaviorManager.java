@@ -1,15 +1,13 @@
-package pl.com.words;
+package pl.com.words.gui;
+
+import pl.com.words.model.Word;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 

@@ -1,4 +1,4 @@
-package pl.com.words;
+package pl.com.words.gui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,16 +48,18 @@ public class SwingPanelsCreator {
         JLabel wordSelectionLabel = new JLabel("Interaction mode:");
         JCheckBox pronunciationCheckBox = new JCheckBox("Pronunciation");
         JCheckBox selectionCheckBox = new JCheckBox("Selection");
-        selectionCheckBox.addActionListener( e-> MockData.SELECTION_MODE = !MockData.SELECTION_MODE );
+//        selectionCheckBox.addActionListener( e-> MockData.SELECTION_MODE = !MockData.SELECTION_MODE );
 
+        pronunciationCheckBox.setSelected(true);
+        selectionCheckBox.setSelected(true);
+        MockData.SELECTION_MODE = selectionCheckBox.isSelected();
+        selectionCheckBox.addActionListener( e-> MockData.SELECTION_MODE = selectionCheckBox.isSelected());
 
         pronunciationCheckBox.setBackground(Color.LIGHT_GRAY);
         selectionCheckBox.setBackground(Color.LIGHT_GRAY);
 
         pronunciationCheckBox.setFont(displayMode.getFont());
         selectionCheckBox.setFont(displayMode.getFont());
-
-
 
 
         JPanel settingsPanel = new JPanel();
@@ -73,7 +75,6 @@ public class SwingPanelsCreator {
         settingsPanel.add(wordSelectionLabel);
         settingsPanel.add(pronunciationCheckBox);
         settingsPanel.add(selectionCheckBox);
-
 
         return settingsPanel;
     }

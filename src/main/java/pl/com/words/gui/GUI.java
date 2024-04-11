@@ -1,4 +1,4 @@
-package pl.com.words;
+package pl.com.words.gui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -46,9 +46,6 @@ public class GUI extends JFrame implements Runnable {
     JMenuItem addListMenuItem;
     JLabel currentListJLabel;
 
-    public static void main(String[] args)  {
-        SwingUtilities.invokeLater(new GUI());
-    }
 
     public void run() {
     }
@@ -63,13 +60,10 @@ public class GUI extends JFrame implements Runnable {
         this.initializeGUIStructure();
         this.organizeLayout();
 
-
         (new MockData()).addWords(buttonsPanel, definitionTextArea);
 
 
-
         this.addBehaviorToElements();
-
 
         //repaint();
         pack();
