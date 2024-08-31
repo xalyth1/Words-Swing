@@ -63,6 +63,7 @@ public class SwingPanelsCreator {
 
 
         JPanel settingsPanel = new JPanel();
+        //settingsPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
         settingsPanel.setPreferredSize(new Dimension(300,640));
         settingsPanel.setVisible(false);
@@ -84,7 +85,9 @@ public class SwingPanelsCreator {
     }
 
     JPanel south_Panel() {
-        return new JPanel();
+        JPanel southPanel = new JPanel();
+        southPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        return southPanel;
     }
 
     JPanel buttons_Panel() {

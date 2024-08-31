@@ -1,6 +1,10 @@
 package pl.com.words.model;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 
 public class Word implements Comparable<Word>{
     private static int NEXT_ID = 0;
@@ -23,6 +27,11 @@ public class Word implements Comparable<Word>{
         this.word = word;
         this.explanation = explanation;
         this.jButton = new JButton(this.word);
+
+        LineBorder lineBorder = new LineBorder(Color.BLACK, 1);
+        EmptyBorder emptyBorder = new EmptyBorder(5, 5, 5, 5);
+        CompoundBorder compoundBorder = new CompoundBorder(lineBorder, emptyBorder);
+        this.jButton.setBorder(compoundBorder);
     }
 
     public String getWord() {

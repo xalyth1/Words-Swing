@@ -141,6 +141,7 @@ public class GUI extends JFrame implements Runnable {
         gbc.gridx = 0;
         gbc.gridy = 0;
         JPanel row0 = new JPanel();
+        row0.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         row0.add(settingsButton);
         row0.add(resetSelectedWordsButton);
         functionalitiesPanel.add(row0, gbc);
