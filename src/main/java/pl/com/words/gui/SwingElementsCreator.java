@@ -1,5 +1,7 @@
 package pl.com.words.gui;
 
+import pl.com.words.model.ApplicationSettings;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Vector;
@@ -121,7 +123,7 @@ public final class SwingElementsCreator {
         });
 
         jComboBox.setPreferredSize(new Dimension(300, 40));
-        jComboBox.setFont(new Font("Serif", Font.BOLD, 30));
+        jComboBox.setFont(ApplicationSettings.applicationFont);
         return jComboBox;
     }
 

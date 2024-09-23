@@ -9,6 +9,7 @@ public class SwingUtils {
         Font font = new Font("Helvetica", Font.BOLD, 24);
         UIManager.put("Button.font", font);
         UIManager.put("Label.font", font);
+        UIManager.put("ComboBox.font", font);
         UIManager.put("ToolTip.font", new FontUIResource(new Font("SansSerif", Font.PLAIN, 18)));
         // Add more component types and properties as needed
         UIManager.getDefaults().put("TextArea.font", UIManager.getFont("Label.font"));
