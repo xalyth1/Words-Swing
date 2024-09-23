@@ -22,7 +22,7 @@ public class MockData {
     }
 
     static Word get(String wordStr) {
-        Optional<Word> opt = words.stream().filter(w -> w.getWord().equals(wordStr)).findFirst();
+        Optional<Word> opt = words.stream().filter(w -> w.getHeadword().equals(wordStr)).findFirst();
         return opt.get();
     }
 
@@ -30,7 +30,7 @@ public class MockData {
         var words = loadWordsAndExplanationsFromCSV();
         for (Word w : words) {
             JButton b = w.getjButton();
-            b.addActionListener(e -> definitionTextArea.setText(w.getExplanation()));
+            b.addActionListener(e -> definitionTextArea.setText(w.getDefinition()));
             panel.add(b);
         }
 

@@ -9,9 +9,9 @@ import java.awt.*;
 public class Word implements Comparable<Word>{
     private static int NEXT_ID = 0;
     private final int id;
-    private final String word;
+    private final String headword;
 
-    private final String explanation;
+    private final String definition;
 
     private final JButton jButton;
 
@@ -20,13 +20,13 @@ public class Word implements Comparable<Word>{
      */
     private boolean isSelected = false;
 
-    public Word(String word, String explanation) {
+    public Word(String headword, String definition) {
         this.id = Word.NEXT_ID;
         Word.NEXT_ID++;
 
-        this.word = word;
-        this.explanation = explanation;
-        this.jButton = new JButton(this.word);
+        this.headword = headword;
+        this.definition = definition;
+        this.jButton = new JButton(this.headword);
 
         LineBorder lineBorder = new LineBorder(Color.BLACK, 1);
         EmptyBorder emptyBorder = new EmptyBorder(5, 5, 5, 5);
@@ -34,12 +34,12 @@ public class Word implements Comparable<Word>{
         this.jButton.setBorder(compoundBorder);
     }
 
-    public String getWord() {
-        return word;
+    public String getHeadword() {
+        return headword;
     }
 
-    public String getExplanation() {
-        return explanation;
+    public String getDefinition() {
+        return definition;
     }
 
     public JButton getjButton() {
@@ -64,6 +64,6 @@ public class Word implements Comparable<Word>{
     }
 
     public String toString() {
-        return this.getWord();
+        return this.getHeadword();
     }
 }

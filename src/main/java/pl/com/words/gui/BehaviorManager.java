@@ -117,9 +117,9 @@ public class BehaviorManager {
             rearrangeWordButtons(buttonsPanel);
         });
         displayModeAlphabetical.addActionListener(e -> {
-            MockData.words.sort(Comparator.comparing(Word::getWord, CASE_INSENSITIVE_ORDER));
-            System.out.println(MockData.words.get(0).getWord());
-            System.out.println(MockData.words.get(1).getWord());
+            MockData.words.sort(Comparator.comparing(Word::getHeadword, CASE_INSENSITIVE_ORDER));
+            System.out.println(MockData.words.get(0).getHeadword());
+            System.out.println(MockData.words.get(1).getHeadword());
             System.out.println(MockData.words.get(2));
             MockData.words.get(3);
 
