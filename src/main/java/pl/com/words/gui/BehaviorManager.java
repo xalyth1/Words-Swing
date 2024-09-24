@@ -1,13 +1,17 @@
 package pl.com.words.gui;
 
+import pl.com.words.model.Model;
 import pl.com.words.model.Word;
+import pl.com.words.model.WordsList;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Vector;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 
@@ -17,6 +21,65 @@ public class BehaviorManager {
 
     public static BehaviorManager getInstance() {
         return behaviorManager;
+    }
+
+
+    void setBehaviorTo_Add_Button(JButton addWordButton) {
+        addWordButton.addActionListener( e -> {
+            WordsList currentList = MockData.words;
+            // add words to current list
+        });
+
+    }
+
+
+    void setBehaviorTo_listsJComboBox(JComboBox<String> jComboBox, JFrame frame, JLabel currentListJLabel, Model model) {
+        DefaultComboBoxModel<String> m = (DefaultComboBoxModel<String>) jComboBox.getModel();
+
+        jComboBox.addActionListener(e -> {
+            JComboBox<String> source = (JComboBox<String>) e.getSource();
+            String selectedOption = (String) source.getSelectedItem();
+            System.out.println("Selected option: " + selectedOption);
+            if (selectedOption.equals("...Add new list...")) {
+                String resultListName = showTextInputDialog(frame, "Enter new list name:");
+
+
+                if (resultListName != null) {
+                    if (listNameExists(resultListName, m)) {
+                        JOptionPane.showMessageDialog(frame,
+                                "\"" + resultListName + "\" list name already exists!");
+                    } else {
+                        m.insertElementAt(resultListName, m.getSize() - 1);
+                        model.addWordsList(new WordsList(resultListName, new ArrayList<>()));
+                        JOptionPane.showMessageDialog(frame, "Added new \"" + resultListName + "\" list!");
+                    }
+                }
+            } else {
+                currentListJLabel.setText("Current list: " + selectedOption);
+                //TODO
+                // change buttonsPanel to show newly selected list's words
+                //buttons
+            }
+        });
+    }
+
+    private boolean listNameExists(String list, ComboBoxModel m) {
+        Vector<String> v = new Vector<>();
+        for (int i = 0; i < m.getSize(); i++) {
+            v.add((String)m.getElementAt(i));
+        }
+        return v.contains(list);
+
+    }
+
+    private String showTextInputDialog(JFrame parent, String message) {
+        JTextField textField = new JTextField();
+        Object[] messageComponents = {message, textField};
+        int option = JOptionPane.showConfirmDialog(parent, messageComponents, "Create new list", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            return textField.getText();
+        }
+        return null;
     }
 
     void setBehaviorTo_SearchTextField(JTextField searchTextField, JPanel buttonsPanel) {
@@ -57,7 +120,7 @@ public class BehaviorManager {
                     Word w = MockData.get(wordText);
                     manageWordSelection(w);
 
-                    List<Word> selected = MockData.words.stream().unordered().filter(Word::isSelected).toList();
+                    List<Word> selected = MockData.words.getList().stream().unordered().filter(Word::isSelected).toList();
                     long selectedCount = selected.size();
                     System.out.println("SELECTED: " + selected);
                     System.out.println("SELECTED Count: " + selectedCount);
@@ -102,7 +165,7 @@ public class BehaviorManager {
     void setBehaviorTo_resetSelectedWordsButton(JButton resetSelectedWords, JButton addToListButton) {
         Color bgDefaultColor = new JButton().getBackground();
         Color fgDefaultColor = new JButton().getForeground();
-        resetSelectedWords.addActionListener(e -> MockData.words.stream().forEach(x -> {
+        resetSelectedWords.addActionListener(e -> MockData.words.getList().stream().forEach(x -> {
             x.setSelected(false);
             x.getjButton().setBackground(bgDefaultColor);
             x.getjButton().setForeground(fgDefaultColor);
@@ -113,15 +176,15 @@ public class BehaviorManager {
 
     void setBehaviorTo_DisplayMode(JPanel buttonsPanel, JRadioButton displayModeDefault, JRadioButton displayModeAlphabetical) {
         displayModeDefault.addActionListener(e -> {
-            MockData.words.sort(Comparator.comparingInt(Word::getId));
+            MockData.words.getList().sort(Comparator.comparingInt(Word::getId));
             rearrangeWordButtons(buttonsPanel);
         });
         displayModeAlphabetical.addActionListener(e -> {
-            MockData.words.sort(Comparator.comparing(Word::getHeadword, CASE_INSENSITIVE_ORDER));
-            System.out.println(MockData.words.get(0).getHeadword());
-            System.out.println(MockData.words.get(1).getHeadword());
-            System.out.println(MockData.words.get(2));
-            MockData.words.get(3);
+            MockData.words.getList().sort(Comparator.comparing(Word::getHeadword, CASE_INSENSITIVE_ORDER));
+            System.out.println(MockData.words.getList().get(0).getHeadword());
+            System.out.println(MockData.words.getList().get(1).getHeadword());
+            System.out.println(MockData.words.getList().get(2));
+            MockData.words.getList().get(3);
 
             rearrangeWordButtons(buttonsPanel);
         });
@@ -129,7 +192,7 @@ public class BehaviorManager {
 
     void rearrangeWordButtons(JPanel buttonsPanel) {
         buttonsPanel.removeAll();
-        for (Word w : MockData.words) {
+        for (Word w : MockData.words.getList()) {
             buttonsPanel.add(w.getjButton());
         }
         buttonsPanel.revalidate();

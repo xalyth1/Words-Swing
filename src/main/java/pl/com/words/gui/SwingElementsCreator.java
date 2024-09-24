@@ -1,6 +1,7 @@
 package pl.com.words.gui;
 
 import pl.com.words.model.ApplicationSettings;
+import pl.com.words.model.WordsList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,56 +88,25 @@ public final class SwingElementsCreator {
         return resetSelectedWordsButton;
     }
 
+    void addNewList(JComboBox jComboBox) {
+
+    }
+
     JComboBox<String> listsJComboBox(JFrame frame, JLabel currentListJLabel) {
-        String[] listArray = new String[] {};
         Vector<String> v = new Vector<>();
         v.add("Default");
         v.add("Exam");
         v.add("...Add new list...");
-
         JComboBox<String> jComboBox = new JComboBox<>(v);
-        jComboBox.addActionListener(e -> {
-            JComboBox<String> source = (JComboBox<String>) e.getSource();
-            String selectedOption = (String) source.getSelectedItem();
-            System.out.println("Selected option: " + selectedOption);
-            if (selectedOption.equals("...Add new list...")) {
-                String resultListName = showTextInputDialog(frame, "Enter new list name:");
-                if (resultListName != null) {
-                    //check if result list name does not exist
-                    if (listNameExists(resultListName, v)) {
-                        JOptionPane.showMessageDialog(frame,
-                                "\"" + resultListName + "\" list name already exists!");
-                    } else {
-                        v.add(v.size() - 1, resultListName);
-                        JOptionPane.showMessageDialog(frame, "Added new \"" + resultListName + "\" list!");
-                    }
-                }
-            } else {
-                currentListJLabel.setText("Current list: " + selectedOption);
-                //TODO
-                // change buttonsPanel to show newly selected list's words
-            }
-        });
 
         jComboBox.setPreferredSize(new Dimension(300, 40));
         jComboBox.setFont(ApplicationSettings.applicationFont);
         return jComboBox;
     }
 
-    private String showTextInputDialog(JFrame parent, String message) {
-        JTextField textField = new JTextField();
-        Object[] messageComponents = {message, textField};
-        int option = JOptionPane.showConfirmDialog(parent, messageComponents, "Create new list", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            return textField.getText();
-        }
-        return null;
-    }
 
-    private boolean listNameExists(String list, Vector<String> v) {
-        return v.contains(list);
 
-    }
+
 
     JButton clearListJButton() {
         JButton clearListJButton = new JButton("Clear List");

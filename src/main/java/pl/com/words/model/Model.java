@@ -18,6 +18,19 @@ public class Model {
         listOfWordsList.remove(wordList);
     }
 
+    public WordsList getList(String listName) throws Exception {
+        Optional<WordsList> list =
+            listOfWordsList.stream()
+                .filter(wl -> wl.getListName().equals(listName))
+                .findFirst();
+        if (list.isPresent()) {
+            return list.get();
+        } else {
+            throw new Exception("There is no such list '" + listName + "' in the model!");
+        }
+
+    }
+
 
 
 

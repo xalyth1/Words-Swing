@@ -1,6 +1,8 @@
 package pl.com.words.gui;
 
+import pl.com.words.model.Model;
 import pl.com.words.model.Word;
+import pl.com.words.model.WordsList;
 
 import javax.swing.*;
 import java.io.File;
@@ -11,7 +13,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class MockData {
-    static List<Word> words;
+    static WordsList words;
 
     static boolean SELECTION_MODE;
 
@@ -22,22 +24,24 @@ public class MockData {
     }
 
     static Word get(String wordStr) {
-        Optional<Word> opt = words.stream().filter(w -> w.getHeadword().equals(wordStr)).findFirst();
+        Optional<Word> opt = words.getList().stream().filter(w -> w.getHeadword().equals(wordStr)).findFirst();
         return opt.get();
     }
 
-    public void addWords(JPanel panel, JTextArea definitionTextArea) {
+    public void addWords(JPanel panel, JTextArea definitionTextArea, Model model) {
         var words = loadWordsAndExplanationsFromCSV();
-        for (Word w : words) {
+        for (Word w : words.getList()) {
             JButton b = w.getjButton();
             b.addActionListener(e -> definitionTextArea.setText(w.getDefinition()));
             panel.add(b);
         }
 
-        MockData.words = words;
+        //MockData.words = words;
+        model.addWordsList(words);
+
     }
 
-    public List<Word> loadWordsAndExplanationsFromCSV() {
+    public WordsList loadWordsAndExplanationsFromCSV() {
         List<Word> words = new ArrayList<>();
         try {
             ClassLoader classLoader = getClass().getClassLoader();
@@ -54,6 +58,7 @@ public class MockData {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        return words;
+        WordsList initial = new WordsList("initial list", words);
+        return initial;
     }
 }

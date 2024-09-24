@@ -1,6 +1,8 @@
 package pl.com.words.gui;
 
 import pl.com.words.model.ApplicationSettings;
+import pl.com.words.model.Model;
+import pl.com.words.model.WordsList;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -48,6 +50,7 @@ public class GUI extends JFrame implements Runnable {
     JMenuItem addListMenuItem;
     JLabel currentListJLabel;
 
+    Model model;
 
     public void run() {
     }
@@ -62,7 +65,9 @@ public class GUI extends JFrame implements Runnable {
         this.initializeGUIStructure();
         this.organizeLayout();
 
-        (new MockData()).addWords(buttonsPanel, definitionTextArea);
+        this.model = new Model();
+        (new MockData()).addWords(buttonsPanel, definitionTextArea, model);
+
 
 
         this.addBehaviorToElements();
@@ -81,6 +86,8 @@ public class GUI extends JFrame implements Runnable {
         manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
         manager.setBehaviorToFileMenuItem(addListMenuItem);
         manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel);
+
+        manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model);
     }
 
     private void initializeGUIStructure() {
