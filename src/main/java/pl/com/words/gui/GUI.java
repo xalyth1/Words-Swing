@@ -1,5 +1,7 @@
 package pl.com.words.gui;
 
+import pl.com.words.model.ApplicationSettings;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -55,7 +57,7 @@ public class GUI extends JFrame implements Runnable {
         setLocation(900,20);
         setPreferredSize(new Dimension(1350,1100));
         setTitle("Words - Now come easy!");
-        SwingUtils.setGlobalFont();
+        ApplicationSettings.setUpFonts();
 
         this.initializeGUIStructure();
         this.organizeLayout();

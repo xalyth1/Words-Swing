@@ -7,6 +7,7 @@ import java.awt.*;
 public class SwingUtils {
     public static void setGlobalFont() {
         Font font = new Font("Helvetica", Font.BOLD, 24);
+        UIManager.put("Menu.font", font);
         UIManager.put("Button.font", font);
         UIManager.put("Label.font", font);
         UIManager.put("ComboBox.font", font);

@@ -31,16 +31,12 @@ public final class SwingElementsCreator {
     JTextField newWordTextField() {
         JTextField newWordTextField = new JTextField();
         newWordTextField.setPreferredSize(new Dimension(300,40));
-        Font font = newWordTextField.getFont().deriveFont((float)28); //deriving a new font
-        newWordTextField.setFont(font);
         return newWordTextField;
     }
 
     JTextField searchTextField() {
         JTextField searchTextField = new JTextField();
         searchTextField.setPreferredSize(new Dimension(300,40));
-        Font font = searchTextField.getFont().deriveFont((float)28); //deriving a new font
-        searchTextField.setFont(font);
         return searchTextField;
     }
 
@@ -159,8 +155,7 @@ public final class SwingElementsCreator {
     }
 
     JMenu menu() {
-
-        JMenu menu = new JMenu("File");
+        JMenu menu = new JMenu("Menu");
         return menu;
     }
 
