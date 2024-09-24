@@ -41,19 +41,7 @@ public class BehaviorManager {
             String selectedOption = (String) source.getSelectedItem();
             System.out.println("Selected option: " + selectedOption);
             if (selectedOption.equals("...Add new list...")) {
-                String resultListName = showTextInputDialog(frame, "Enter new list name:");
-
-
-                if (resultListName != null) {
-                    if (listNameExists(resultListName, m)) {
-                        JOptionPane.showMessageDialog(frame,
-                                "\"" + resultListName + "\" list name already exists!");
-                    } else {
-                        m.insertElementAt(resultListName, m.getSize() - 1);
-                        model.addWordsList(new WordsList(resultListName, new ArrayList<>()));
-                        JOptionPane.showMessageDialog(frame, "Added new \"" + resultListName + "\" list!");
-                    }
-                }
+                handleAddingList(frame, m, model);
             } else {
                 currentListJLabel.setText("Current list: " + selectedOption);
                 //TODO
@@ -61,6 +49,20 @@ public class BehaviorManager {
                 //buttons
             }
         });
+    }
+
+    private void handleAddingList(JFrame frame, DefaultComboBoxModel<String> m, Model model) {
+        String resultListName = showTextInputDialog(frame, "Enter new list name:");
+        if (resultListName != null) {
+            if (listNameExists(resultListName, m)) {
+                JOptionPane.showMessageDialog(frame,
+                        "\"" + resultListName + "\" list name already exists!");
+            } else {
+                m.insertElementAt(resultListName, m.getSize() - 1);
+                model.addWordsList(new WordsList(resultListName, new ArrayList<>()));
+                JOptionPane.showMessageDialog(frame, "Added new \"" + resultListName + "\" list!");
+            }
+        }
     }
 
     private boolean listNameExists(String list, ComboBoxModel m) {
