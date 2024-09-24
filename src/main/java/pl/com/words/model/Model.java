@@ -29,9 +29,17 @@ public class Model {
             throw new Exception("There is no such list '" + listName + "' in the model!");
         }
 
+
+
     }
 
-
+    public List<String> getListsNames() {
+        List<String> names = listOfWordsList
+                .stream()
+                .map(e -> e.getListName())
+                .toList();
+        return names;
+    }
 
 
 }

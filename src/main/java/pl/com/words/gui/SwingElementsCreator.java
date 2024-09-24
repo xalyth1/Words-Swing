@@ -94,8 +94,9 @@ public final class SwingElementsCreator {
 
     JComboBox<String> listsJComboBox(JFrame frame, JLabel currentListJLabel) {
         Vector<String> v = new Vector<>();
-        v.add("Default");
-        v.add("Exam");
+//        v.add("Default");
+//        v.add("Exam");
+        v.add();
         v.add("...Add new list...");
         JComboBox<String> jComboBox = new JComboBox<>(v);
 

@@ -26,7 +26,7 @@ public class BehaviorManager {
 
     void setBehaviorTo_Add_Button(JButton addWordButton) {
         addWordButton.addActionListener( e -> {
-            WordsList currentList = MockData.words;
+            //WordsList currentList = MockData.words;
             // add words to current list
         });
 

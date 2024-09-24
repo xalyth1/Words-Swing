@@ -2,7 +2,6 @@ package pl.com.words.gui;
 
 import pl.com.words.model.ApplicationSettings;
 import pl.com.words.model.Model;
-import pl.com.words.model.WordsList;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -50,6 +49,9 @@ public class GUI extends JFrame implements Runnable {
     JMenuItem addListMenuItem;
     JLabel currentListJLabel;
 
+    /**
+     * Model
+     */
     Model model;
 
     public void run() {
@@ -104,7 +106,7 @@ public class GUI extends JFrame implements Runnable {
         this.definitionScrollPane = creator.definitionScrollPane(this.definitionTextArea);
 
         this.currentListJLabel = creator.currentListJLabel();
-        this.listJComboBox = creator.listsJComboBox(this, currentListJLabel);
+        this.listJComboBox = creator.listsJComboBox(this, currentListJLabel, this.model);
 
         this.addToListButton = creator.addSelectedToListJButton();
 

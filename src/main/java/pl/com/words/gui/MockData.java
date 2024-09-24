@@ -58,7 +58,7 @@ public class MockData {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        WordsList initial = new WordsList("initial list", words);
+        WordsList initial = new WordsList("Initial List", words);
         return initial;
     }
 }
