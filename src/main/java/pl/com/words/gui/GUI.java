@@ -54,6 +54,8 @@ public class GUI extends JFrame implements Runnable {
      */
     Model model;
 
+    SwingElementsCreator swingElementsCreator;
+
     public void run() {
     }
 
@@ -66,7 +68,9 @@ public class GUI extends JFrame implements Runnable {
 
 
 
+
         this.model = new Model();
+        this.swingElementsCreator = new SwingElementsCreator(model);
 
 
 
@@ -99,11 +103,12 @@ public class GUI extends JFrame implements Runnable {
         manager.setBehaviorToFileMenuItem(addListMenuItem);
         manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel, model);
 
-        manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model);
+        manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model, buttonsPanel,
+                definitionTextArea);
     }
 
     private void initializeGUIStructure(Model model) {
-        SwingElementsCreator creator = SwingElementsCreator.getInstance();
+        SwingElementsCreator creator = new SwingElementsCreator(model);
         this.settingsButton = creator.settingsButton();
         this.addWordButton = creator.addWordButton();
         this.deleteWordButton = creator.deleteWordButton();
@@ -143,11 +148,11 @@ public class GUI extends JFrame implements Runnable {
         this.functionalitiesPanel = creator.functionalities_Panel();
     }
 
-    private void associateElements() {
+    private void associateElements(Model model) {
         meaningPanel.add(definitionScrollPane);
 
         //centralPanel.add(buttonsPanel);
-        this.buttonsPanelScrollPane = SwingElementsCreator.getInstance().buttonsPanelScrollPane(buttonsPanel);
+        this.buttonsPanelScrollPane = swingElementsCreator.buttonsPanelScrollPane(buttonsPanel);
         centralPanel.add(buttonsPanelScrollPane);
 
         northPanel.add(currentListJLabel);
@@ -232,7 +237,7 @@ public class GUI extends JFrame implements Runnable {
 
     private void organizeLayout(Model model) {
         createPanels(model);
-        associateElements();
+        associateElements(model);
         createLayout();
         //addBehaviorToElements();
     }

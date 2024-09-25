@@ -1,6 +1,7 @@
 package pl.com.words.gui;
 
 import pl.com.words.model.ApplicationSettings;
+import pl.com.words.model.Model;
 import pl.com.words.model.WordsList;
 import java.util.List;
 
@@ -12,14 +13,13 @@ import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 
 public final class SwingElementsCreator {
-    private static final SwingElementsCreator creator = new SwingElementsCreator();
+    //private static final SwingElementsCreator creator = new SwingElementsCreator();
 
     private static final Dimension PREFERRED_BUTTON_DIMENSION = new Dimension(140, 40);
 
-    private SwingElementsCreator() { }
-
-    public static SwingElementsCreator getInstance() {
-        return creator;
+    private Model model;
+    SwingElementsCreator(Model model) {
+        this.model = model;
     }
 
     JButton settingsButton() {
@@ -145,6 +145,6 @@ public final class SwingElementsCreator {
     }
 
     JLabel currentListJLabel() {
-        return new JLabel("Current list: Default");
+        return new JLabel("Current list: " + model.getCurrentList().getListName());
     }
 }

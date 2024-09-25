@@ -48,7 +48,8 @@ public class BehaviorManager {
     }
 
 
-    void setBehaviorTo_listsJComboBox(JComboBox<String> jComboBox, JFrame frame, JLabel currentListJLabel, Model model) {
+    void setBehaviorTo_listsJComboBox(JComboBox<String> jComboBox, JFrame frame, JLabel currentListJLabel, Model model,
+                                      JPanel buttonsPanel, JTextArea definitionTextArea) {
         DefaultComboBoxModel<String> m = (DefaultComboBoxModel<String>) jComboBox.getModel();
 
         jComboBox.addActionListener(e -> {
@@ -62,6 +63,27 @@ public class BehaviorManager {
                 //TODO
                 // change buttonsPanel to show newly selected list's words
                 //buttons
+
+                //search for selectedOption in model . wordslist . list names
+                try {
+                    WordsList wl = model.getList(selectedOption);
+
+                    model.setCurrentList(wl);
+
+                    //remove buttons from previous list
+                    buttonsPanel.removeAll();
+
+                    //add buttons from newly selected list to buttonsPanel JPanel
+                    addWords(buttonsPanel, definitionTextArea, model.getCurrentList());
+                    buttonsPanel.revalidate();
+                    buttonsPanel.repaint();
+
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame,"Program error. There is no selected list in the model");
+                }
+
             }
         });
     }
