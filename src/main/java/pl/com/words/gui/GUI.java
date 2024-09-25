@@ -64,11 +64,18 @@ public class GUI extends JFrame implements Runnable {
         setTitle("Words - Now come easy!");
         ApplicationSettings.setUpFonts();
 
+
+
+        this.model = new Model();
+
+
+
         this.initializeGUIStructure();
         this.organizeLayout();
 
-        this.model = new Model();
-        (new MockData()).addWords(buttonsPanel, definitionTextArea, model);
+
+        //(new MockData()).addWords(buttonsPanel, definitionTextArea, model);
+
 
 
 
@@ -81,13 +88,16 @@ public class GUI extends JFrame implements Runnable {
 
     private void addBehaviorToElements() {
         BehaviorManager manager = BehaviorManager.getInstance();
+
+        manager.addWords(buttonsPanel, definitionTextArea, model.getCurrentList());
+
         manager.setBehaviorTo_SearchTextField(searchTextField, buttonsPanel);
-        manager.addBehaviorTo_Buttons(buttonsPanel, searchTextField, addToListButton);
+        manager.addBehaviorTo_Buttons(buttonsPanel, searchTextField, addToListButton, model);
         manager.addBehaviorTo_SettingsButton(settingsButton, settingsPanel);
         manager.setBehaviorTo_DisplayMode(buttonsPanel, displayModeDefault, displayModeAlphabetical);
         manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
         manager.setBehaviorToFileMenuItem(addListMenuItem);
-        manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel);
+        manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel, model);
 
         manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model);
     }
@@ -106,7 +116,7 @@ public class GUI extends JFrame implements Runnable {
         this.definitionScrollPane = creator.definitionScrollPane(this.definitionTextArea);
 
         this.currentListJLabel = creator.currentListJLabel();
-        this.listJComboBox = creator.listsJComboBox(this, currentListJLabel, this.model);
+        this.listJComboBox = creator.listsJComboBox(this, currentListJLabel, this.model.getListsNames());
 
         this.addToListButton = creator.addSelectedToListJButton();
 

@@ -2,6 +2,7 @@ package pl.com.words.gui;
 
 import pl.com.words.model.ApplicationSettings;
 import pl.com.words.model.WordsList;
+import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,11 +93,14 @@ public final class SwingElementsCreator {
 
     }
 
-    JComboBox<String> listsJComboBox(JFrame frame, JLabel currentListJLabel) {
+    JComboBox<String> listsJComboBox(JFrame frame, JLabel currentListJLabel, List<String> listNames) {
         Vector<String> v = new Vector<>();
 //        v.add("Default");
 //        v.add("Exam");
-        v.add();
+        for (String listName : listNames) {
+            v.add(listName);
+        }
+
         v.add("...Add new list...");
         JComboBox<String> jComboBox = new JComboBox<>(v);
 

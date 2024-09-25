@@ -23,13 +23,13 @@ public class MockData {
        //loadWordsAndExplanationsFromCSV();
     }
 
-    static Word get(String wordStr) {
-        Optional<Word> opt = words.getList().stream().filter(w -> w.getHeadword().equals(wordStr)).findFirst();
-        return opt.get();
-    }
+//    static Word get(String wordStr) {
+//        Optional<Word> opt = words.getList().stream().filter(w -> w.getHeadword().equals(wordStr)).findFirst();
+//        return opt.get();
+//    }
 
     public void addWords(JPanel panel, JTextArea definitionTextArea, Model model) {
-        var words = loadWordsAndExplanationsFromCSV();
+        //var words = loadWordsAndExplanationsFromCSV();
         for (Word w : words.getList()) {
             JButton b = w.getjButton();
             b.addActionListener(e -> definitionTextArea.setText(w.getDefinition()));
@@ -46,7 +46,6 @@ public class MockData {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
             File myObj = new File(classLoader.getResource("mock.txt").getFile());
-
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();

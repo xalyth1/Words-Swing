@@ -24,6 +24,21 @@ public class BehaviorManager {
     }
 
 
+    public void addWords(JPanel panel, JTextArea definitionTextArea, WordsList list) {
+        //var words = loadWordsAndExplanationsFromCSV();
+        for (Word w : list.getList()) {
+            JButton b = w.getjButton();
+            b.addActionListener(e -> definitionTextArea.setText(w.getDefinition()));
+            panel.add(b);
+        }
+
+        //MockData.words = words;
+        //model.addWordsList(words);
+
+    }
+
+
+
     void setBehaviorTo_Add_Button(JButton addWordButton) {
         addWordButton.addActionListener( e -> {
             //WordsList currentList = MockData.words;
@@ -113,16 +128,16 @@ public class BehaviorManager {
         }
     }
 
-    void addBehaviorTo_Buttons(JPanel buttonsPanel, JTextField focusTextField, JButton addToListButton) {
+    void addBehaviorTo_Buttons(JPanel buttonsPanel, JTextField focusTextField, JButton addToListButton, Model model) {
         for (Component c : buttonsPanel.getComponents()) {
             if (c instanceof JButton b) {
                 b.addActionListener(e -> {
                     focusTextField.requestFocus();
                     String wordText = b.getText();
-                    Word w = MockData.get(wordText);
+                    Word w = model.get(wordText);
                     manageWordSelection(w);
 
-                    List<Word> selected = MockData.words.getList().stream().unordered().filter(Word::isSelected).toList();
+                    List<Word> selected = model.getCurrentList().getList().stream().unordered().filter(Word::isSelected).toList();
                     long selectedCount = selected.size();
                     System.out.println("SELECTED: " + selected);
                     System.out.println("SELECTED Count: " + selectedCount);
@@ -209,7 +224,7 @@ public class BehaviorManager {
         });
     }
 
-    void setBehaviorToDeleteWordsButton(JButton deleteJButton, JPanel buttonsPanel) {
+    void setBehaviorToDeleteWordsButton(JButton deleteJButton, JPanel buttonsPanel, Model model) {
         deleteJButton.addActionListener(e -> {
             Component[] components = buttonsPanel.getComponents();
 
@@ -218,7 +233,7 @@ public class BehaviorManager {
                 for (Component c : components) {
                     if (c instanceof JButton) {
                         String wordStr = ((JButton) c).getText();
-                        Word word = MockData.get(wordStr);
+                        Word word = model.get(wordStr);
                         c.setVisible(!word.isSelected());
 
                     }
