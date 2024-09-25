@@ -9,6 +9,8 @@ public class Model {
     private List<WordsList> listOfWordsList;
     private WordsList currentList;
 
+    public static boolean SELECTION_MODE = true;
+
     public Model() {
         this.listOfWordsList = new ArrayList<>();
         this.listOfWordsList.add(this.loadWordsFromCSV());

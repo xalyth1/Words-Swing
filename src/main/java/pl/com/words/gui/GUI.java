@@ -70,8 +70,8 @@ public class GUI extends JFrame implements Runnable {
 
 
 
-        this.initializeGUIStructure();
-        this.organizeLayout();
+        this.initializeGUIStructure(model);
+        this.organizeLayout(model);
 
 
         //(new MockData()).addWords(buttonsPanel, definitionTextArea, model);
@@ -79,15 +79,15 @@ public class GUI extends JFrame implements Runnable {
 
 
 
-        this.addBehaviorToElements();
+        this.addBehaviorToElements(model);
 
         //repaint();
         pack();
         setVisible(true);
     }
 
-    private void addBehaviorToElements() {
-        BehaviorManager manager = BehaviorManager.getInstance();
+    private void addBehaviorToElements(Model model) {
+        BehaviorManager manager = new BehaviorManager(model);
 
         manager.addWords(buttonsPanel, definitionTextArea, model.getCurrentList());
 
@@ -102,7 +102,7 @@ public class GUI extends JFrame implements Runnable {
         manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model);
     }
 
-    private void initializeGUIStructure() {
+    private void initializeGUIStructure(Model model) {
         SwingElementsCreator creator = SwingElementsCreator.getInstance();
         this.settingsButton = creator.settingsButton();
         this.addWordButton = creator.addWordButton();
@@ -132,14 +132,14 @@ public class GUI extends JFrame implements Runnable {
         JFrame.setDefaultLookAndFeelDecorated(true);
     }
 
-    private void createPanels() {
+    private void createPanels(Model model) {
         SwingPanelsCreator creator = SwingPanelsCreator.getInstance();
         this.northPanel = creator.north_Panel();
         this.southPanel = creator.south_Panel();
         this.centralPanel = creator.central_Panel();
         this.buttonsPanel = creator.buttons_Panel();
         this.meaningPanel = creator.meaning_Panel();
-        this.settingsPanel = creator.settings_Panel(this.displayModeDefault, this.displayModeAlphabetical);
+        this.settingsPanel = creator.settings_Panel(this.displayModeDefault, this.displayModeAlphabetical, model);
         this.functionalitiesPanel = creator.functionalities_Panel();
     }
 
@@ -230,8 +230,8 @@ public class GUI extends JFrame implements Runnable {
         getContentPane().add(settingsPanel, BorderLayout.LINE_START);
     }
 
-    private void organizeLayout() {
-        createPanels();
+    private void organizeLayout(Model model) {
+        createPanels(model);
         associateElements();
         createLayout();
         //addBehaviorToElements();

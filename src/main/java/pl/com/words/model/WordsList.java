@@ -8,6 +8,8 @@ public class WordsList {
     private String listName;
     private List<Word> list;
 
+    private boolean isAnythingSelected = false;
+
 
     public WordsList(String listName, List<Word> list) {
         this.id = NEXT_ID;
@@ -34,5 +36,13 @@ public class WordsList {
 
     public void setList(List<Word> list) {
         this.list = list;
+    }
+
+    public boolean isAnythingSelected() {
+        return isAnythingSelected;
+    }
+
+    public void setIsAnythingSelected(boolean anythingSelected) {
+        isAnythingSelected = anythingSelected;
     }
 }

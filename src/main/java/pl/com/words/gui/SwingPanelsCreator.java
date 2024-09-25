@@ -1,5 +1,7 @@
 package pl.com.words.gui;
 
+import pl.com.words.model.Model;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -19,7 +21,7 @@ public class SwingPanelsCreator {
         return northPanel;
     }
 
-    JPanel settings_Panel(JRadioButton displayModeDefault, JRadioButton displayModeAlphabetical) {
+    JPanel settings_Panel(JRadioButton displayModeDefault, JRadioButton displayModeAlphabetical, Model model) {
         JLabel displayMode = new JLabel("Display mode:     ");
         Font font = displayMode.getFont();
         //JRadioButton displayModeList = new JRadioButton();
@@ -52,8 +54,8 @@ public class SwingPanelsCreator {
 
         pronunciationCheckBox.setSelected(true);
         selectionCheckBox.setSelected(true);
-        MockData.SELECTION_MODE = selectionCheckBox.isSelected();
-        selectionCheckBox.addActionListener( e-> MockData.SELECTION_MODE = selectionCheckBox.isSelected());
+        Model.SELECTION_MODE = selectionCheckBox.isSelected();
+        selectionCheckBox.addActionListener( e-> Model.SELECTION_MODE = !selectionCheckBox.isSelected());
 
         pronunciationCheckBox.setBackground(Color.LIGHT_GRAY);
         selectionCheckBox.setBackground(Color.LIGHT_GRAY);

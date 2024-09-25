@@ -16,11 +16,11 @@ import java.util.Vector;
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 
 public class BehaviorManager {
-    private static final BehaviorManager behaviorManager = new BehaviorManager();
-    private BehaviorManager() { }
 
-    public static BehaviorManager getInstance() {
-        return behaviorManager;
+    private final Model model;
+
+    BehaviorManager(Model model) {
+        this.model = model;
     }
 
 
@@ -142,11 +142,11 @@ public class BehaviorManager {
                     System.out.println("SELECTED: " + selected);
                     System.out.println("SELECTED Count: " + selectedCount);
 
-                    MockData.isAnythingSelected = selectedCount > 0;
+                    model.getCurrentList().setIsAnythingSelected(selectedCount > 0);
 
-                    System.out.println("is Anything Selected? : " + MockData.isAnythingSelected);
+                    System.out.println("is Anything Selected? : " + model.getCurrentList().isAnythingSelected());
 
-                    if (MockData.isAnythingSelected) {
+                    if (model.getCurrentList().isAnythingSelected()) {
                         addToListButton.setVisible(true);
                         //addWordsToListButton.setVisible = true
                     } else {
@@ -159,7 +159,7 @@ public class BehaviorManager {
     }
 
     private void manageWordSelection(Word w) {
-        if (!MockData.SELECTION_MODE)
+        if (Model.SELECTION_MODE)
             return;
 
         JButton b = w.getjButton();
@@ -182,7 +182,7 @@ public class BehaviorManager {
     void setBehaviorTo_resetSelectedWordsButton(JButton resetSelectedWords, JButton addToListButton) {
         Color bgDefaultColor = new JButton().getBackground();
         Color fgDefaultColor = new JButton().getForeground();
-        resetSelectedWords.addActionListener(e -> MockData.words.getList().stream().forEach(x -> {
+        resetSelectedWords.addActionListener(e -> model.getCurrentList().getList().stream().forEach(x -> {
             x.setSelected(false);
             x.getjButton().setBackground(bgDefaultColor);
             x.getjButton().setForeground(fgDefaultColor);
@@ -193,15 +193,15 @@ public class BehaviorManager {
 
     void setBehaviorTo_DisplayMode(JPanel buttonsPanel, JRadioButton displayModeDefault, JRadioButton displayModeAlphabetical) {
         displayModeDefault.addActionListener(e -> {
-            MockData.words.getList().sort(Comparator.comparingInt(Word::getId));
+            model.getCurrentList().getList().sort(Comparator.comparingInt(Word::getId));
             rearrangeWordButtons(buttonsPanel);
         });
         displayModeAlphabetical.addActionListener(e -> {
-            MockData.words.getList().sort(Comparator.comparing(Word::getHeadword, CASE_INSENSITIVE_ORDER));
-            System.out.println(MockData.words.getList().get(0).getHeadword());
-            System.out.println(MockData.words.getList().get(1).getHeadword());
-            System.out.println(MockData.words.getList().get(2));
-            MockData.words.getList().get(3);
+            model.getCurrentList().getList().sort(Comparator.comparing(Word::getHeadword, CASE_INSENSITIVE_ORDER));
+            System.out.println(model.getCurrentList().getList().get(0).getHeadword());
+            System.out.println(model.getCurrentList().getList().get(1).getHeadword());
+            System.out.println(model.getCurrentList().getList().get(2));
+            model.getCurrentList().getList().get(3);
 
             rearrangeWordButtons(buttonsPanel);
         });
@@ -209,7 +209,7 @@ public class BehaviorManager {
 
     void rearrangeWordButtons(JPanel buttonsPanel) {
         buttonsPanel.removeAll();
-        for (Word w : MockData.words.getList()) {
+        for (Word w : model.getCurrentList().getList()) {
             buttonsPanel.add(w.getjButton());
         }
         buttonsPanel.revalidate();
@@ -228,7 +228,7 @@ public class BehaviorManager {
         deleteJButton.addActionListener(e -> {
             Component[] components = buttonsPanel.getComponents();
 
-            if (MockData.isAnythingSelected) {
+            if (model.getCurrentList().isAnythingSelected()) {
 
                 for (Component c : components) {
                     if (c instanceof JButton) {
