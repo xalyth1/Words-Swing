@@ -54,8 +54,10 @@ public class SwingPanelsCreator {
 
         pronunciationCheckBox.setSelected(true);
         selectionCheckBox.setSelected(true);
-        Model.SELECTION_MODE = selectionCheckBox.isSelected();
-        selectionCheckBox.addActionListener( e-> Model.SELECTION_MODE = !selectionCheckBox.isSelected());
+        selectionCheckBox.addActionListener( e-> {
+            boolean newValue = selectionCheckBox.isSelected();
+            Model.USE_SELECTION_MODE = newValue;
+        });
 
         pronunciationCheckBox.setBackground(Color.LIGHT_GRAY);
         selectionCheckBox.setBackground(Color.LIGHT_GRAY);

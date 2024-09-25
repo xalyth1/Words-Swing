@@ -159,7 +159,7 @@ public class BehaviorManager {
     }
 
     private void manageWordSelection(Word w) {
-        if (Model.SELECTION_MODE)
+        if (!Model.USE_SELECTION_MODE)
             return;
 
         JButton b = w.getjButton();
