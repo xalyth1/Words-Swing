@@ -6,18 +6,18 @@
 ![application screenshot](/src/main/resources/words800.png)
 ---------------------------------------------------
 Application features:
-*   Displaying the easily adaptable to arrangement and manipulation list of words in a neat user-friendly format
-*	Displaying the translation of a word in a foreign language after clicking on it
+*   ✅ Displaying the easily adaptable to arrangement and manipulation list of words in a neat user-friendly format
+*	✅ Displaying the translation of a word in a foreign language after clicking on it
 *	Playback of recorded pronunciation of a given word
-*	Sorting words on the list according to the order of addition or alphabetically
-*	Dynamic searching from the words list
+*	✅ Sorting words on the list according to the order of addition or alphabetically
+*	✅ Dynamic searching from the words list
 *	List management mechanism
 
 *	Adding a new word to the list
 *	Adding multiple new words to the list
 *	Removing selected words from the list
 *	Dynamic saving of words on the lists
-*	Creating a new list
+*	✅ Creating a new list
 *	Deleting a list
 ---------------------------------------------------
 Functionalities to be added in the near future:

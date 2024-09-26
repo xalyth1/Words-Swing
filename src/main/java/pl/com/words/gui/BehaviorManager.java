@@ -1,5 +1,6 @@
 package pl.com.words.gui;
 
+import pl.com.words.api.WordsServiceApiClient;
 import pl.com.words.model.Model;
 import pl.com.words.model.Word;
 import pl.com.words.model.WordsList;
@@ -18,31 +19,28 @@ import static java.lang.String.CASE_INSENSITIVE_ORDER;
 public class BehaviorManager {
 
     private final Model model;
+    private final WordsServiceApiClient service;
 
     BehaviorManager(Model model) {
         this.model = model;
+        this.service = new WordsServiceApiClient();
     }
 
 
     public void addWords(JPanel panel, JTextArea definitionTextArea, WordsList list) {
-        //var words = loadWordsAndExplanationsFromCSV();
         for (Word w : list.getList()) {
             JButton b = w.getjButton();
             b.addActionListener(e -> definitionTextArea.setText(w.getDefinition()));
             panel.add(b);
         }
-
-        //MockData.words = words;
-        //model.addWordsList(words);
-
     }
 
-
-
-    void setBehaviorTo_Add_Button(JButton addWordButton) {
+    void setBehaviorTo_Add_Button(JButton addWordButton, JTextField newWordTextField) {
         addWordButton.addActionListener( e -> {
-            //WordsList currentList = MockData.words;
-            // add words to current list
+            WordsList currentList = model.getCurrentList();
+
+            //String definition = wordsService.get(headword);
+            //currentList.getList().add(new Word(newWordTextField.getText(), definition));
         });
 
     }
