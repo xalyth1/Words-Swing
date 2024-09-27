@@ -3,22 +3,50 @@ package pl.com.words.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.com.words.model.Word;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URI;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class WordsServiceApiClient {
 
     public static void main(String[] args) {
         WordsServiceApiClient client = new WordsServiceApiClient();
-        String response = client.get("infinity");
+        String response = client.get("cool");
         System.out.println(response);
     }
 
     public WordsServiceApiClient() {
 
+    }
+
+
+    public InputStream getPronunciation(String headword) {
+        String apiUrl = "http://localhost:8080/pronunciation/" + headword;
+        InputStream mp3 = null;
+        try {
+            mp3 = fetchPronunciationFromApi(apiUrl);
+        } catch (Exception e) {
+            System.out.println("Some exception in getPronunciation(headword)");
+            e.printStackTrace();
+        }
+        return mp3;
+    }
+
+    private InputStream fetchPronunciationFromApi(String url)
+    throws IOException, InterruptedException{
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+        HttpResponse<InputStream> response =
+                client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+        return new BufferedInputStream(response.body());
     }
 
 
@@ -46,7 +74,8 @@ public class WordsServiceApiClient {
             } else {
                 System.out.println("GET request failed. Response Code: " + responseCode);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.out.println("Cannot connect to Words-Service");
             e.printStackTrace();
         }
         return jsonResponse;

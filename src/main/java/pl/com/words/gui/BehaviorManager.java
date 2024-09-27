@@ -1,6 +1,9 @@
 package pl.com.words.gui;
 
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 import pl.com.words.api.WordsServiceApiClient;
+import pl.com.words.media.MP3Player;
 import pl.com.words.model.Model;
 import pl.com.words.model.Word;
 import pl.com.words.model.WordsList;
@@ -9,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -148,7 +152,8 @@ public class BehaviorManager {
         }
     }
 
-    void addBehaviorTo_Buttons(JPanel buttonsPanel, JTextField focusTextField, JButton addToListButton, Model model) {
+    void addBehaviorTo_Buttons(JPanel buttonsPanel, JTextField focusTextField, JButton addToListButton, Model model,
+                               JCheckBox pronunciationButton) {
         for (Component c : buttonsPanel.getComponents()) {
             if (c instanceof JButton b) {
                 b.addActionListener(e -> {
@@ -173,8 +178,33 @@ public class BehaviorManager {
                         addToListButton.setVisible(false);
                     }
 
+                    //pronunciation
+                    managePronunciation(w.getHeadword(), pronunciationButton);
+
+
+
                 });
             }
+        }
+    }
+
+    private void managePronunciation(String headword, JCheckBox pronunciationButton) {
+        if (pronunciationButton.isSelected()) {
+            //request Words-Service API for mp3
+            InputStream mp3Stream = service.getPronunciation(headword);
+            //play mp3
+            MP3Player myPlayer = new MP3Player(mp3Stream);
+            myPlayer.play();
+
+
+//            try {
+//                Player player = new Player(mp3Stream);
+//
+//                player.play();
+//            } catch (JavaLayerException e) {
+//                System.out.println("Error playing mp3");
+//                e.printStackTrace();
+//            }
         }
     }
 

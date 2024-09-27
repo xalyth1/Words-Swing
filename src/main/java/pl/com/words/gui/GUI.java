@@ -41,6 +41,9 @@ public class GUI extends JFrame implements Runnable {
     JRadioButton displayModeDefault = new JRadioButton("Ordinal");
     JRadioButton displayModeAlphabetical = new JRadioButton("Alphabetical");
 
+    JCheckBox pronunciationCheckBox = new JCheckBox("Pronunciation");
+    JCheckBox selectionCheckBox = new JCheckBox("Selection");
+
     /**Menu
      */
     JMenuBar menuBar;
@@ -66,22 +69,13 @@ public class GUI extends JFrame implements Runnable {
         setTitle("Words - Now come easy!");
         ApplicationSettings.setUpFonts();
 
-
-
-
         this.model = new Model();
         this.swingElementsCreator = new SwingElementsCreator(model);
-
-
 
         this.initializeGUIStructure(model);
         this.organizeLayout(model);
 
-
         //(new MockData()).addWords(buttonsPanel, definitionTextArea, model);
-
-
-
 
         this.addBehaviorToElements(model);
 
@@ -96,7 +90,8 @@ public class GUI extends JFrame implements Runnable {
         manager.addWords(buttonsPanel, definitionTextArea, model.getCurrentList());
 
         manager.setBehaviorTo_SearchTextField(searchTextField, buttonsPanel);
-        manager.addBehaviorTo_Buttons(buttonsPanel, searchTextField, addToListButton, model);
+        manager.addBehaviorTo_Buttons(buttonsPanel, searchTextField, addToListButton, model,
+                pronunciationCheckBox);
         manager.addBehaviorTo_SettingsButton(settingsButton, settingsPanel);
         manager.setBehaviorTo_DisplayMode(buttonsPanel, displayModeDefault, displayModeAlphabetical);
         manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
@@ -144,7 +139,8 @@ public class GUI extends JFrame implements Runnable {
         this.centralPanel = creator.central_Panel();
         this.buttonsPanel = creator.buttons_Panel();
         this.meaningPanel = creator.meaning_Panel();
-        this.settingsPanel = creator.settings_Panel(this.displayModeDefault, this.displayModeAlphabetical, model);
+        this.settingsPanel = creator.settings_Panel(this.displayModeDefault, this.displayModeAlphabetical, model,
+                this.pronunciationCheckBox, this.selectionCheckBox);
         this.functionalitiesPanel = creator.functionalities_Panel();
     }
 

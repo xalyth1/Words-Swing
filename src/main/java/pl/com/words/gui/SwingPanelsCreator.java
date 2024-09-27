@@ -21,7 +21,8 @@ public class SwingPanelsCreator {
         return northPanel;
     }
 
-    JPanel settings_Panel(JRadioButton displayModeDefault, JRadioButton displayModeAlphabetical, Model model) {
+    JPanel settings_Panel(JRadioButton displayModeDefault, JRadioButton displayModeAlphabetical, Model model,
+                          JCheckBox pronunciationCheckBox, JCheckBox selectionCheckBox) {
         JLabel displayMode = new JLabel("Display mode:     ");
         Font font = displayMode.getFont();
         //JRadioButton displayModeList = new JRadioButton();
@@ -48,8 +49,7 @@ public class SwingPanelsCreator {
          *
          */
         JLabel wordSelectionLabel = new JLabel("Interaction mode:");
-        JCheckBox pronunciationCheckBox = new JCheckBox("Pronunciation");
-        JCheckBox selectionCheckBox = new JCheckBox("Selection");
+
 //        selectionCheckBox.addActionListener( e-> MockData.SELECTION_MODE = !MockData.SELECTION_MODE );
 
         pronunciationCheckBox.setSelected(true);
