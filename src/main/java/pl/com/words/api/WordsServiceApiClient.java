@@ -21,7 +21,7 @@ public class WordsServiceApiClient {
     public static void main(String[] args) {
         WordsServiceApiClient client = new WordsServiceApiClient();
         String response = client.getDefinitions("delve");
-        System.out.println(client.prepareExtendedWordDefinitions(response));
+        //System.out.println(client.prepareExtendedWordDefinitions(response));
     }
 
     public WordsServiceApiClient() {
@@ -54,22 +54,7 @@ public class WordsServiceApiClient {
     }
 
 
-    /**
-     * definition of word containing full definitions (all)
-     * @return  formattedMultipleDefinitions
-     */
-    public String prepareExtendedWordDefinitions(String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        StringBuilder formattedMultipleDefinitions = new StringBuilder();
-        try {
-            // Parse JSON string to User object
-            List<String> list = objectMapper.readValue(json, new TypeReference<ArrayList<String>>() {});
-            list.stream().forEach(definition -> formattedMultipleDefinitions.append(definition).append("\n"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return formattedMultipleDefinitions.toString();
-    }
+
 
     /**
      * Only one first definition for simplicity of learning

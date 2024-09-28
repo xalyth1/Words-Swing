@@ -1,5 +1,8 @@
 package pl.com.words.model;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -20,6 +23,8 @@ public class Word implements Comparable<Word>{
      */
     private final String simplifiedDefinition;
 
+    private final String fullDefinition;
+
     private final JButton jButton;
 
     /**
@@ -34,12 +39,43 @@ public class Word implements Comparable<Word>{
         this.headword = headword;
         this.definitions = definitions;
         this.simplifiedDefinition = definitions.get(0);
+        this.fullDefinition = this.prepareExtendedFullWordDefinitions(definitions);
 
         this.jButton = new JButton(this.headword);
         LineBorder lineBorder = new LineBorder(Color.BLACK, 1);
         EmptyBorder emptyBorder = new EmptyBorder(5, 5, 5, 5);
         CompoundBorder compoundBorder = new CompoundBorder(lineBorder, emptyBorder);
         this.jButton.setBorder(compoundBorder);
+    }
+
+
+    private String prepareExtendedFullWordDefinitions(List<String> definitions) {
+        StringBuilder formattedMultipleDefinitions = new StringBuilder();
+        definitions.stream()
+                .forEach(definition ->
+                        formattedMultipleDefinitions
+                                .append("•")
+                                .append(definition)
+                                .append("\n")
+                );
+        return formattedMultipleDefinitions.toString();
+    }
+
+    /**
+     * definition of word containing full definitions (all)
+     * @return  formattedMultipleDefinitions
+     */
+    private String prepareExtendedFullWordDefinitions(String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        StringBuilder formattedMultipleDefinitions = new StringBuilder();
+        try {
+            // Parse JSON string to User object
+            List<String> list = objectMapper.readValue(json, new TypeReference<ArrayList<String>>() {});
+            list.stream().forEach(definition -> formattedMultipleDefinitions.append(definition).append("\n"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return formattedMultipleDefinitions.toString();
     }
 
     private Word(String headword, String definition) {
@@ -50,7 +86,9 @@ public class Word implements Comparable<Word>{
         this.definitions = new ArrayList<>();
         this.definitions.add(definition);
         this.simplifiedDefinition = definition;
+        this.fullDefinition = null;
         this.jButton = new JButton(this.headword);
+
 
         LineBorder lineBorder = new LineBorder(Color.BLACK, 1);
         EmptyBorder emptyBorder = new EmptyBorder(5, 5, 5, 5);
@@ -68,6 +106,10 @@ public class Word implements Comparable<Word>{
 
     public String getSimplifiedDefinition() {
         return simplifiedDefinition;
+    }
+
+    public String getFullDefinition() {
+        return fullDefinition;
     }
 
     public JButton getjButton() {

@@ -32,7 +32,7 @@ public class BehaviorManager {
     public void addWords(JPanel panel, JTextArea definitionTextArea, WordsList list) {
         for (Word w : list.getList()) {
             JButton b = w.getjButton();
-            b.addActionListener(e -> definitionTextArea.setText(w.getSimplifiedDefinition()));
+            b.addActionListener(e -> definitionTextArea.setText(w.getFullDefinition()));
             panel.add(b);
         }
     }
