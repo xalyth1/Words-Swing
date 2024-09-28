@@ -100,6 +100,9 @@ public class GUI extends JFrame implements Runnable {
 
         manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model, buttonsPanel,
                 definitionTextArea);
+
+        manager.setBehaviorTo_Add_Button(addWordButton, newWordTextField, buttonsPanel,
+                definitionTextArea, searchTextField, addToListButton, model, pronunciationCheckBox);
     }
 
     private void initializeGUIStructure(Model model) {

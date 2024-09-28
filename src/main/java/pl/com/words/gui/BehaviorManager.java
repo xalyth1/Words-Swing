@@ -37,14 +37,22 @@ public class BehaviorManager {
         }
     }
 
-    void setBehaviorTo_Add_Button(JButton addWordButton, JTextField newWordTextField) {
+    void setBehaviorTo_Add_Button(JButton addWordButton, JTextField newWordTextField,
+                                  JPanel buttonsPanel, JTextArea definitionTextArea, JTextField focusTextField, JButton addToListButton, Model model, JCheckBox pronunciationCheckBox) {
         addWordButton.addActionListener( e -> {
             WordsList currentList = model.getCurrentList();
             String headword = newWordTextField.getText().toLowerCase();
 
             //todo start here
             String jsonDefinition = service.getDefinitions(headword);
-            //currentList.getList().add(new Word(newWordTextField.getText(), definition));
+            Word word = model.createWordObject(headword, jsonDefinition);
+            model.addWordToCurrentList(word);
+            JButton button = word.getjButton();
+            buttonsPanel.add(button);
+            button.addActionListener(event -> definitionTextArea.setText(word.getFullDefinition()));
+            addBehaviorToWordButton(button, buttonsPanel, focusTextField, addToListButton, model, pronunciationCheckBox);
+            buttonsPanel.revalidate();
+            buttonsPanel.repaint();
         });
 
     }
@@ -156,34 +164,41 @@ public class BehaviorManager {
                                JCheckBox pronunciationButton) {
         for (Component c : buttonsPanel.getComponents()) {
             if (c instanceof JButton b) {
-                b.addActionListener(e -> {
-                    focusTextField.requestFocus();
-                    String wordText = b.getText();
-                    Word w = model.get(wordText);
-                    manageWordSelection(w);
-
-                    List<Word> selected = model.getCurrentList().getList().stream()
-                            .unordered().filter(Word::isSelected).toList();
-                    long selectedCount = selected.size();
-                    System.out.println("SELECTED: " + selected);
-                    System.out.println("SELECTED Count: " + selectedCount);
-
-                    model.getCurrentList().setIsAnythingSelected(selectedCount > 0);
-
-                    System.out.println("is Anything Selected? : " + model.getCurrentList().isAnythingSelected());
-
-                    if (model.getCurrentList().isAnythingSelected()) {
-                        addToListButton.setVisible(true);
-                    } else {
-                        addToListButton.setVisible(false);
-                    }
-
-                    //pronunciation
-                    managePronunciation(w.getHeadword(), pronunciationButton);
-
-                });
+                addBehaviorToWordButton(b, buttonsPanel, focusTextField, addToListButton,
+                        model, pronunciationButton);
             }
         }
+    }
+
+    private void addBehaviorToWordButton(JButton b, JPanel buttonsPanel, JTextField focusTextField, JButton addToListButton, Model model,
+                                         JCheckBox pronunciationButton) {
+        b.addActionListener(e -> {
+            focusTextField.requestFocus();
+            String wordText = b.getText();
+            Word w = model.get(wordText);
+            manageWordSelection(w);
+
+            List<Word> selected = model.getCurrentList().getList().stream()
+                    .unordered().filter(Word::isSelected).toList();
+            long selectedCount = selected.size();
+            System.out.println("SELECTED: " + selected);
+            System.out.println("SELECTED Count: " + selectedCount);
+
+            model.getCurrentList().setIsAnythingSelected(selectedCount > 0);
+
+            System.out.println("is Anything Selected? : " + model.getCurrentList().isAnythingSelected());
+
+            if (model.getCurrentList().isAnythingSelected()) {
+                addToListButton.setVisible(true);
+            } else {
+                addToListButton.setVisible(false);
+            }
+
+            //pronunciation
+            managePronunciation(w.getHeadword(), pronunciationButton);
+
+        });
+
     }
 
     private void managePronunciation(String headword, JCheckBox pronunciationButton) {

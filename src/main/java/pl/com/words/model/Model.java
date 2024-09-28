@@ -47,7 +47,7 @@ public class Model {
         return  wl;
     }
 
-    private Word createWordObject(String headword, String rawDefinitions) {
+    public Word createWordObject(String headword, String rawDefinitions) {
         ObjectMapper objectMapper = new ObjectMapper();
         Word w = null;
         try {
@@ -85,6 +85,11 @@ public class Model {
                 .filter(w -> w.getHeadword().equals(headword))
                 .findFirst();
         return opt.get();
+    }
+
+
+    public void addWordToCurrentList(Word word) {
+        this.currentList.getList().add(word);
     }
 
     public void addWordsList(WordsList wordsList) {
