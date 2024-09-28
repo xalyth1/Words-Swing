@@ -8,7 +8,7 @@
 Application features:
 *   ✅ Displaying the easily adaptable to arrangement and manipulation list of words in a neat user-friendly format
 *	✅ Displaying the translation of a word in a foreign language after clicking on it
-*	Playback of recorded pronunciation of a given word
+*	✅ Playback of recorded pronunciation of a given word
 *	✅ Sorting words on the list according to the order of addition or alphabetically
 *	✅ Dynamic searching from the words list
 *	List management mechanism

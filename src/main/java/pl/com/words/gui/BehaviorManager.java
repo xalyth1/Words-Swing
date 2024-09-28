@@ -1,7 +1,5 @@
 package pl.com.words.gui;
 
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
 import pl.com.words.api.WordsServiceApiClient;
 import pl.com.words.media.MP3Player;
 import pl.com.words.model.Model;
@@ -34,7 +32,7 @@ public class BehaviorManager {
     public void addWords(JPanel panel, JTextArea definitionTextArea, WordsList list) {
         for (Word w : list.getList()) {
             JButton b = w.getjButton();
-            b.addActionListener(e -> definitionTextArea.setText(w.getDefinition()));
+            b.addActionListener(e -> definitionTextArea.setText(w.getSimplifiedDefinition()));
             panel.add(b);
         }
     }
@@ -42,8 +40,10 @@ public class BehaviorManager {
     void setBehaviorTo_Add_Button(JButton addWordButton, JTextField newWordTextField) {
         addWordButton.addActionListener( e -> {
             WordsList currentList = model.getCurrentList();
+            String headword = newWordTextField.getText().toLowerCase();
 
-            //String definition = wordsService.get(headword);
+            //todo start here
+            String jsonDefinition = service.getDefinitions(headword);
             //currentList.getList().add(new Word(newWordTextField.getText(), definition));
         });
 
@@ -162,7 +162,8 @@ public class BehaviorManager {
                     Word w = model.get(wordText);
                     manageWordSelection(w);
 
-                    List<Word> selected = model.getCurrentList().getList().stream().unordered().filter(Word::isSelected).toList();
+                    List<Word> selected = model.getCurrentList().getList().stream()
+                            .unordered().filter(Word::isSelected).toList();
                     long selectedCount = selected.size();
                     System.out.println("SELECTED: " + selected);
                     System.out.println("SELECTED Count: " + selectedCount);
@@ -173,15 +174,12 @@ public class BehaviorManager {
 
                     if (model.getCurrentList().isAnythingSelected()) {
                         addToListButton.setVisible(true);
-                        //addWordsToListButton.setVisible = true
                     } else {
                         addToListButton.setVisible(false);
                     }
 
                     //pronunciation
                     managePronunciation(w.getHeadword(), pronunciationButton);
-
-
 
                 });
             }
@@ -192,19 +190,9 @@ public class BehaviorManager {
         if (pronunciationButton.isSelected()) {
             //request Words-Service API for mp3
             InputStream mp3Stream = service.getPronunciation(headword);
-            //play mp3
+
             MP3Player myPlayer = new MP3Player(mp3Stream);
             myPlayer.play();
-
-
-//            try {
-//                Player player = new Player(mp3Stream);
-//
-//                player.play();
-//            } catch (JavaLayerException e) {
-//                System.out.println("Error playing mp3");
-//                e.printStackTrace();
-//            }
         }
     }
 

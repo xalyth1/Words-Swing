@@ -1,5 +1,7 @@
 package pl.com.words.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.com.words.model.Word;
 
@@ -7,17 +9,19 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class WordsServiceApiClient {
 
     public static void main(String[] args) {
         WordsServiceApiClient client = new WordsServiceApiClient();
-        String response = client.get("cool");
-        System.out.println(response);
+        String response = client.getDefinitions("delve");
+        System.out.println(client.prepareExtendedWordDefinitions(response));
     }
 
     public WordsServiceApiClient() {
@@ -50,7 +54,33 @@ public class WordsServiceApiClient {
     }
 
 
-    public String get(String headword) {
+    /**
+     * definition of word containing full definitions (all)
+     * @return  formattedMultipleDefinitions
+     */
+    public String prepareExtendedWordDefinitions(String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        StringBuilder formattedMultipleDefinitions = new StringBuilder();
+        try {
+            // Parse JSON string to User object
+            List<String> list = objectMapper.readValue(json, new TypeReference<ArrayList<String>>() {});
+            list.stream().forEach(definition -> formattedMultipleDefinitions.append(definition).append("\n"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return formattedMultipleDefinitions.toString();
+    }
+
+    /**
+     * Only one first definition for simplicity of learning
+     */
+    public String prepareSimplifiedDefinition(String json) {
+        return "";
+    }
+
+
+
+    public String getDefinitions(String headword) {
         String apiUrl = "http://localhost:8080/word/" + headword;
         String jsonResponse = null;
         try {
@@ -81,8 +111,17 @@ public class WordsServiceApiClient {
         return jsonResponse;
     }
 
+
+
+
+
+
     public Word convertJsonToWordObject(String json) {
         Word w = null;
+        /**
+         *
+         * todo test and rethink
+         */
         try {
             ObjectMapper om = new ObjectMapper();
             w = om.readValue(json, Word.class);
