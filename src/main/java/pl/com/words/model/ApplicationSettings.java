@@ -8,6 +8,8 @@ public class ApplicationSettings {
     public static final Font applicationFont = new Font("Helvetica",Font.BOLD, 24);
     public static final Font menuFont = new Font("Helvetica",Font.BOLD, 18);
 
+    public static final Dimension PREFERRED_BUTTON_DIMENSION = new Dimension(140, 40);
+
     public static void setUpFonts() {
         setMenuFont();
 

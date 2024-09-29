@@ -13,7 +13,7 @@ Application features:
 *	✅ Dynamic searching from the words list
 *	List management mechanism
 
-*	Adding a new word to the list
+*	✅ Adding a new word to the list
 *	Adding multiple new words to the list
 *	Removing selected words from the list
 *	Dynamic saving of words on the lists

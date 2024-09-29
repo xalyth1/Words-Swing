@@ -1,5 +1,7 @@
 package pl.com.words.gui;
 
+import pl.com.words.gui.components.DefinitionPanel;
+import pl.com.words.gui.components.Panels;
 import pl.com.words.model.ApplicationSettings;
 import pl.com.words.model.Model;
 
@@ -13,36 +15,11 @@ import static java.awt.GridBagConstraints.LINE_START;
  * This is Words-Swing Application GUI
  * (c) xalyth
  * Creation date: 01-04 - 2024
+ * Updates and development: 07-10  -  2024
  */
 public class GUI extends JFrame implements Runnable {
 
-    /**
-     * Functions
-     */
-    private JButton addWordButton, deleteWordButton, settingsButton, resetSelectedWordsButton, addToListButton;
-    private JTextField newWordTextField, searchTextField;
-
-    private JComboBox<String> listJComboBox;
-
-    /**
-     * Display
-     */
-    private JTextArea definitionTextArea;
-    private JScrollPane definitionScrollPane;
-    private JScrollPane buttonsPanelScrollPane;
-
-    /**
-     * Panels
-     */
-    private JPanel buttonsPanel, southPanel, northPanel, centralPanel, meaningPanel, settingsPanel, functionalitiesPanel;
-
-    /** Settings panel
-     */
-    JRadioButton displayModeDefault = new JRadioButton("Ordinal");
-    JRadioButton displayModeAlphabetical = new JRadioButton("Alphabetical");
-
-    JCheckBox pronunciationCheckBox = new JCheckBox("Pronunciation");
-    JCheckBox selectionCheckBox = new JCheckBox("Selection");
+    //private JScrollPane buttonsPanelScrollPane;
 
     /**Menu
      */
@@ -50,12 +27,12 @@ public class GUI extends JFrame implements Runnable {
     JMenu menu;
     JMenu submenu;
     JMenuItem addListMenuItem;
-    JLabel currentListJLabel;
 
     /**
      * Model
      */
     Model model;
+    Panels panels;
 
     SwingElementsCreator swingElementsCreator;
 
@@ -70,12 +47,12 @@ public class GUI extends JFrame implements Runnable {
         ApplicationSettings.setUpFonts();
 
         this.model = new Model();
+        this.panels = new Panels(model);
+
         this.swingElementsCreator = new SwingElementsCreator(model);
 
         this.initializeGUIStructure(model);
         this.organizeLayout(model);
-
-        //(new MockData()).addWords(buttonsPanel, definitionTextArea, model);
 
         this.addBehaviorToElements(model);
 
@@ -87,140 +64,74 @@ public class GUI extends JFrame implements Runnable {
     private void addBehaviorToElements(Model model) {
         BehaviorManager manager = new BehaviorManager(model);
 
-        manager.addWords(buttonsPanel, definitionTextArea, model.getCurrentList());
+        manager.addWords(panels.getButtonsPanel(), panels.getDefinitionPanel().getDefinitionTextArea(), model.getCurrentList());
 
-        manager.setBehaviorTo_SearchTextField(searchTextField, buttonsPanel);
-        manager.addBehaviorTo_Buttons(buttonsPanel, searchTextField, addToListButton, model,
-                pronunciationCheckBox);
-        manager.addBehaviorTo_SettingsButton(settingsButton, settingsPanel);
-        manager.setBehaviorTo_DisplayMode(buttonsPanel, displayModeDefault, displayModeAlphabetical);
+        manager.setBehaviorTo_SearchTextField(panels.getFunctionalitiesPanel().getSearchTextField(), panels.getButtonsPanel());
+
+        JPanel buttonsPanel = panels.getButtonsPanel();
+        manager.addBehaviorTo_Buttons(buttonsPanel, panels.getFunctionalitiesPanel().getSearchTextField(), panels.getFunctionalitiesPanel().getAddToListButton(), model,
+                panels.getSettingsPanel().getPronunciationCheckBox());
+
+        JButton settingsButton = panels.getFunctionalitiesPanel().getSettingsButton();
+        manager.addBehaviorTo_SettingsButton(settingsButton, panels.getSettingsPanel());
+
+
+
+        manager.setBehaviorTo_DisplayMode(buttonsPanel, panels.getSettingsPanel().getDisplayModeDefault(), panels.getSettingsPanel().getDisplayModeAlphabetical());
+        var resetSelectedWordsButton = panels.getFunctionalitiesPanel().getResetSelectedWordsButton();
+        var addToListButton = panels.getFunctionalitiesPanel().getAddToListButton();
         manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
         manager.setBehaviorToFileMenuItem(addListMenuItem);
+        var deleteWordButton = panels.getNorthPanel().getDeleteWordButton();
         manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel, model);
 
+        var listJComboBox = panels.getFunctionalitiesPanel().getListJComboBox();
+        var currentListJLabel = panels.getNorthPanel().getCurrentListJLabel();
+        var definitionTextArea = panels.getDefinitionPanel().getDefinitionTextArea();
         manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model, buttonsPanel,
                 definitionTextArea);
 
+        var addWordButton = panels.getFunctionalitiesPanel().getAddWordButton();
+        var newWordTextField = panels.getFunctionalitiesPanel().getNewWordTextField();
+        var searchTextField = panels.getFunctionalitiesPanel().getSearchTextField();
+        var pronunciationCheckBox = panels.getSettingsPanel().getPronunciationCheckBox();
         manager.setBehaviorTo_Add_Button(addWordButton, newWordTextField, buttonsPanel,
                 definitionTextArea, searchTextField, addToListButton, model, pronunciationCheckBox);
     }
 
     private void initializeGUIStructure(Model model) {
         SwingElementsCreator creator = new SwingElementsCreator(model);
-        this.settingsButton = creator.settingsButton();
-        this.addWordButton = creator.addWordButton();
-        this.deleteWordButton = creator.deleteWordButton();
-        this.resetSelectedWordsButton = creator.resetSelectedWordsButton();
 
-        this.newWordTextField = creator.newWordTextField();
-        this.searchTextField = creator.searchTextField();
 
-        this.definitionTextArea = creator.definitionTextArea();
-        this.definitionScrollPane = creator.definitionScrollPane(this.definitionTextArea);
 
-        this.currentListJLabel = creator.currentListJLabel();
-        this.listJComboBox = creator.listsJComboBox(this, currentListJLabel, this.model.getListsNames());
-
-        this.addToListButton = creator.addSelectedToListJButton();
 
         this.menuBar = creator.menuBar();
         this.menu = creator.menu();
         this.submenu = creator.fileSubMenu();
         this.addListMenuItem = creator.addListMenuItem();
 
-
-        this.displayModeDefault.setBackground(Color.LIGHT_GRAY);
-        this.displayModeAlphabetical.setBackground(Color.LIGHT_GRAY);
-
         JFrame.setDefaultLookAndFeelDecorated(true);
     }
 
-    private void createPanels(Model model) {
-        SwingPanelsCreator creator = SwingPanelsCreator.getInstance();
-        this.northPanel = creator.north_Panel();
-        this.southPanel = creator.south_Panel();
-        this.centralPanel = creator.central_Panel();
-        this.buttonsPanel = creator.buttons_Panel();
-        this.meaningPanel = creator.meaning_Panel();
-        this.settingsPanel = creator.settings_Panel(this.displayModeDefault, this.displayModeAlphabetical, model,
-                this.pronunciationCheckBox, this.selectionCheckBox);
-        this.functionalitiesPanel = creator.functionalities_Panel();
-    }
-
     private void associateElements(Model model) {
-        meaningPanel.add(definitionScrollPane);
-
-        //centralPanel.add(buttonsPanel);
-        this.buttonsPanelScrollPane = swingElementsCreator.buttonsPanelScrollPane(buttonsPanel);
-        centralPanel.add(buttonsPanelScrollPane);
-
-        northPanel.add(currentListJLabel);
-        currentListJLabel.setBorder(new EmptyBorder(0, 50, 0, 50));
-        northPanel.add(deleteWordButton);
-
-        southPanel.add(meaningPanel);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = LINE_START;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        JPanel row0 = new JPanel();
-        row0.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        row0.add(settingsButton);
-        row0.add(resetSelectedWordsButton);
-        functionalitiesPanel.add(row0, gbc);
-
-
-        gbc.gridy = 1;
-        gbc.gridx = 0;
-        JPanel row1 = new JPanel();
-        var addWordLabel = new JLabel("Add word:");
-        addWordLabel.setPreferredSize(new Dimension(120,40));
-        row1.add(addWordLabel);
-        row1.add(newWordTextField);
-        row1.add(addWordButton);
-        functionalitiesPanel.add(row1, gbc);
-
-        gbc.gridy = 2;
-        gbc.gridx = 0;
-        JPanel row2 = new JPanel();
-        var searchLabel = new JLabel("Search:");
-        searchLabel.setPreferredSize(new Dimension(120,40));
-        row2.add(searchLabel);
-        row2.add(searchTextField);
-        functionalitiesPanel.add(row2, gbc);
-
-
-
-        gbc.gridy = 3;
-        gbc.gridx = 0;
-        JPanel row3 = new JPanel();
-        JLabel listLabel = new JLabel("List:");
-        listLabel.setPreferredSize(new Dimension(120,40));
-        row3.add(listLabel);
-
-        row3.add(listJComboBox);
-        row3.add(addToListButton);
-        functionalitiesPanel.add(row3, gbc);
-
         //Menus
         submenu.add(addListMenuItem);
         menu.add(submenu);
         menuBar.add(menu);
         this.setJMenuBar(menuBar);
 
-        southPanel.add(functionalitiesPanel);
-        southPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
         //
 //        southPanel.add(settingsButton);
 //        southPanel.add(newWordTextField);
 //        southPanel.add(addWordButton);
 //        southPanel.add(searchTextField);
 
-        buttonsPanelScrollPane.revalidate();
-        buttonsPanelScrollPane.repaint();
 
+//        buttonsPanelScrollPane.revalidate();
+//        buttonsPanelScrollPane.repaint();
+
+        JPanel buttonsPanel = panels.getButtonsPanel();
         buttonsPanel.revalidate();
         buttonsPanel.repaint();
     }
@@ -228,16 +139,15 @@ public class GUI extends JFrame implements Runnable {
     private void createLayout() {
         BorderLayout mainLayout = new BorderLayout();
         getContentPane().setLayout(mainLayout);
-        getContentPane().add(northPanel, BorderLayout.PAGE_START);
-        getContentPane().add(southPanel, BorderLayout.PAGE_END);
-        getContentPane().add(centralPanel, BorderLayout.CENTER);
-        getContentPane().add(settingsPanel, BorderLayout.LINE_START);
+        getContentPane().add(panels.getNorthPanel(), BorderLayout.PAGE_START);
+        getContentPane().add(panels.getSouthPanel(), BorderLayout.PAGE_END);
+        getContentPane().add(panels.getCentralPanel(), BorderLayout.CENTER);
+        getContentPane().add(panels.getSettingsPanel(), BorderLayout.LINE_START);
     }
 
     private void organizeLayout(Model model) {
-        createPanels(model);
+
         associateElements(model);
         createLayout();
-        //addBehaviorToElements();
     }
 }

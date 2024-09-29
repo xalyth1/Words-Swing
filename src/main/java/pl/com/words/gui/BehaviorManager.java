@@ -28,7 +28,6 @@ public class BehaviorManager {
         this.service = new WordsServiceApiClient();
     }
 
-
     public void addWords(JPanel panel, JTextArea definitionTextArea, WordsList list) {
         for (Word w : list.getList()) {
             JButton b = w.getjButton();
@@ -40,10 +39,11 @@ public class BehaviorManager {
     void setBehaviorTo_Add_Button(JButton addWordButton, JTextField newWordTextField,
                                   JPanel buttonsPanel, JTextArea definitionTextArea, JTextField focusTextField, JButton addToListButton, Model model, JCheckBox pronunciationCheckBox) {
         addWordButton.addActionListener( e -> {
-            WordsList currentList = model.getCurrentList();
             String headword = newWordTextField.getText().toLowerCase();
+            newWordTextField.setText("");
 
-            //todo start here
+
+
             String jsonDefinition = service.getDefinitions(headword);
             Word word = model.createWordObject(headword, jsonDefinition);
             model.addWordToCurrentList(word);
@@ -51,6 +51,8 @@ public class BehaviorManager {
             buttonsPanel.add(button);
             button.addActionListener(event -> definitionTextArea.setText(word.getFullDefinition()));
             addBehaviorToWordButton(button, buttonsPanel, focusTextField, addToListButton, model, pronunciationCheckBox);
+
+            newWordTextField.requestFocus();
             buttonsPanel.revalidate();
             buttonsPanel.repaint();
         });
