@@ -50,7 +50,7 @@ public class Panels {
      */
     private NorthPanel createNorthPanel(Model model) {
         NorthPanel northPanel = new NorthPanel(model);
-        northPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        //northPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         northPanel.setBackground(Color.LIGHT_GRAY);
         return northPanel;
     }

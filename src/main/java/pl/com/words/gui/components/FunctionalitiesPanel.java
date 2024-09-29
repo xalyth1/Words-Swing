@@ -21,6 +21,7 @@ public class FunctionalitiesPanel extends JPanel {
     private JTextField searchTextField;
     private JComboBox<String> listJComboBox;
     private JButton addToListButton;
+    private JButton deleteWordButton;
 
     public FunctionalitiesPanel(Model model) {
         super(new GridBagLayout());
@@ -29,13 +30,22 @@ public class FunctionalitiesPanel extends JPanel {
         this.newWordTextField = newWordTextField();
         this.addWordButton = addWordButton();
         this.searchTextField = searchTextField();
-        this.listJComboBox = listsJComboBox(model.getListsNames());
-        this.addToListButton = addSelectedToListJButton();
+        this.listJComboBox = this.listsJComboBox(model.getListsNames());
+        this.addToListButton = this.addSelectedToListJButton();
+        this.deleteWordButton = this.deleteWordButton();
 
         //GridBagLayout layout = new GridBagLayout();
         this.addSubPanelStructureToFunctionalitiesPanel();
 
         //this.setLayout(layout);
+    }
+
+    private JButton deleteWordButton() {
+        JButton deleteWordButton = new JButton("Delete selected");
+        deleteWordButton.setToolTipText("Delete selected words from current list");
+        deleteWordButton.setPreferredSize(new Dimension(240,40));
+
+        return deleteWordButton;
     }
 
     private JButton addSelectedToListJButton() {
@@ -102,6 +112,7 @@ public class FunctionalitiesPanel extends JPanel {
         row0.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         row0.add(settingsButton);
         row0.add(resetSelectedWordsButton);
+        row0.add(deleteWordButton);
         this.add(row0, gbc);
 
 
@@ -172,5 +183,9 @@ public class FunctionalitiesPanel extends JPanel {
 
     public JButton getAddToListButton() {
         return addToListButton;
+    }
+
+    public JButton getDeleteWordButton() {
+        return deleteWordButton;
     }
 }

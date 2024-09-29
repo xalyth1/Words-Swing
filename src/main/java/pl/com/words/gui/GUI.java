@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static java.awt.GridBagConstraints.LINE_START;
+import pl.com.words.gui.components.Menu;
 
 /**
  * This is Words-Swing Application GUI
@@ -18,23 +18,10 @@ import static java.awt.GridBagConstraints.LINE_START;
  * Updates and development: 07-10  -  2024
  */
 public class GUI extends JFrame implements Runnable {
-
-    //private JScrollPane buttonsPanelScrollPane;
-
-    /**Menu
-     */
-    JMenuBar menuBar;
-    JMenu menu;
-    JMenu submenu;
-    JMenuItem addListMenuItem;
-
-    /**
-     * Model
-     */
     Model model;
     Panels panels;
+    Menu menu;
 
-    SwingElementsCreator swingElementsCreator;
 
     public void run() {
     }
@@ -46,10 +33,10 @@ public class GUI extends JFrame implements Runnable {
         setTitle("Words - Now come easy!");
         ApplicationSettings.setUpFonts();
 
+
         this.model = new Model();
         this.panels = new Panels(model);
-
-        this.swingElementsCreator = new SwingElementsCreator(model);
+        this.menu = new Menu();
 
         this.initializeGUIStructure(model);
         this.organizeLayout(model);
@@ -81,8 +68,8 @@ public class GUI extends JFrame implements Runnable {
         var resetSelectedWordsButton = panels.getFunctionalitiesPanel().getResetSelectedWordsButton();
         var addToListButton = panels.getFunctionalitiesPanel().getAddToListButton();
         manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
-        manager.setBehaviorToFileMenuItem(addListMenuItem);
-        var deleteWordButton = panels.getNorthPanel().getDeleteWordButton();
+        manager.setBehaviorToFileMenuItem(this.menu.getAddListMenuItem());
+        var deleteWordButton = panels.getFunctionalitiesPanel().getDeleteWordButton();
         manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel, model);
 
         var listJComboBox = panels.getFunctionalitiesPanel().getListJComboBox();
@@ -100,36 +87,12 @@ public class GUI extends JFrame implements Runnable {
     }
 
     private void initializeGUIStructure(Model model) {
-        SwingElementsCreator creator = new SwingElementsCreator(model);
-
-
-
-
-        this.menuBar = creator.menuBar();
-        this.menu = creator.menu();
-        this.submenu = creator.fileSubMenu();
-        this.addListMenuItem = creator.addListMenuItem();
 
         JFrame.setDefaultLookAndFeelDecorated(true);
     }
 
-    private void associateElements(Model model) {
-        //Menus
-        submenu.add(addListMenuItem);
-        menu.add(submenu);
-        menuBar.add(menu);
-        this.setJMenuBar(menuBar);
-
-
-        //
-//        southPanel.add(settingsButton);
-//        southPanel.add(newWordTextField);
-//        southPanel.add(addWordButton);
-//        southPanel.add(searchTextField);
-
-
-//        buttonsPanelScrollPane.revalidate();
-//        buttonsPanelScrollPane.repaint();
+    private void associateElements() {
+        this.setJMenuBar(this.menu.getMenuBar());
 
         JPanel buttonsPanel = panels.getButtonsPanel();
         buttonsPanel.revalidate();
@@ -147,7 +110,7 @@ public class GUI extends JFrame implements Runnable {
 
     private void organizeLayout(Model model) {
 
-        associateElements(model);
+        associateElements();
         createLayout();
     }
 }

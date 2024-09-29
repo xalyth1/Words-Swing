@@ -7,38 +7,27 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class NorthPanel extends JPanel {
-    private JButton deleteWordButton;
+
     private JLabel currentListJLabel;
 
     public NorthPanel(Model model) {
-        this.deleteWordButton = this.deleteWordButton();
+        super(new BorderLayout());
         this.currentListJLabel = this.currentListJLabel(model);
-        this.currentListJLabel.setBorder(new EmptyBorder(0, 50, 0, 50));
-        this.add(deleteWordButton);
-        this.add(currentListJLabel);
-    }
 
-    private JButton deleteWordButton() {
-        JButton deleteWordButton = new JButton("Delete selected");
-        deleteWordButton.setToolTipText("Delete selected words from current list");
-        deleteWordButton.setPreferredSize(new Dimension(240,40));
-
-        return deleteWordButton;
+        this.add(currentListJLabel, BorderLayout.CENTER);
     }
 
     private JLabel currentListJLabel(Model model) {
 
-        return new JLabel("Current list: " + model.getCurrentList().getListName());
+        JLabel jLabel = new JLabel("Current list: " + model.getCurrentList().getListName(), JLabel.CENTER);
+        jLabel.setBorder(new EmptyBorder(15, 50, 15, 50));
+        return jLabel;
     }
 
 
     /**
      * Getters
      */
-
-    public JButton getDeleteWordButton() {
-        return deleteWordButton;
-    }
 
     public JLabel getCurrentListJLabel() {
         return currentListJLabel;

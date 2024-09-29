@@ -284,7 +284,6 @@ public class BehaviorManager {
             Component[] components = buttonsPanel.getComponents();
 
             if (model.getCurrentList().isAnythingSelected()) {
-
                 for (Component c : components) {
                     if (c instanceof JButton) {
                         String wordStr = ((JButton) c).getText();
