@@ -1,22 +1,34 @@
 package pl.com.words.gui.components;
 
+import pl.com.words.gui.components.behavior.SettingsPanelController;
 import pl.com.words.model.Model;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SettingsPanel extends JPanel {
+    private Panels panels;
+    private Model model;
+
     private JRadioButton displayModeDefault = new JRadioButton("Ordinal");
     private JRadioButton displayModeAlphabetical = new JRadioButton("Alphabetical");
 
     private JCheckBox pronunciationCheckBox = new JCheckBox("Pronunciation");
     private JCheckBox selectionCheckBox = new JCheckBox("Selection");
 
-    public SettingsPanel() {
+    private SettingsPanelController controller;
+
+    public SettingsPanel(Panels panels, Model model) {
+        this.panels = panels;
+        this.model = model;
+
+
         this.displayModeDefault.setBackground(Color.LIGHT_GRAY);
         this.displayModeAlphabetical.setBackground(Color.LIGHT_GRAY);
 
         this.createSettingsPanelElements();
+
+        this.controller = new SettingsPanelController(panels,this, this.model);
 
     }
 
@@ -64,9 +76,15 @@ public class SettingsPanel extends JPanel {
     }
 
 
+
+
     /**
      * Getters
      */
+
+    public SettingsPanelController getController() {
+        return controller;
+    }
 
     public JRadioButton getDisplayModeDefault() {
         return displayModeDefault;

@@ -2,6 +2,7 @@ package pl.com.words.gui.components;
 
 import pl.com.words.api.WordsServiceApiClient;
 import pl.com.words.gui.GUI;
+import pl.com.words.gui.components.behavior.PanelsController;
 import pl.com.words.media.MP3Player;
 import pl.com.words.model.Model;
 import pl.com.words.model.Word;
@@ -28,6 +29,7 @@ public class Panels {
     GUI gui;
     Model model;
     WordsServiceApiClient service = new WordsServiceApiClient();
+    PanelsController panelsController;
     /**
      * Panels
      */
@@ -41,6 +43,7 @@ public class Panels {
     public Panels(GUI gui, Model model) {
         this.gui = gui;
         this.model = model;
+        this.panelsController = new PanelsController(this, model);
 
         this.northPanel = this.createNorthPanel(model);
         this.southPanel = this.createSouthPanel();
@@ -72,9 +75,12 @@ public class Panels {
         this.setBehaviorTo_listsJComboBox(this.gui, this.model);
         this.addBehaviorTo_SettingsButton();
         this.setBehaviorTo_Add_Button(this.model);
-        this.setBehaviorTo_DisplayMode();
+        //this.setBehaviorTo_DisplayMode();
         this.setBehaviorTo_resetSelectedWordsButton();
         this.setBehaviorToDeleteWordsButton(this.model);
+
+
+        this.panelsController.addBehavior();
     }
 
 
@@ -124,35 +130,8 @@ public class Panels {
         resetSelectedWords.addActionListener(e -> addToListButton.setVisible(false));
     }
 
-    private void setBehaviorTo_DisplayMode() {
-        JPanel buttonsPanel = this.getButtonsPanel();
-        JRadioButton displayModeDefault = this.settingsPanel.getDisplayModeDefault();
-        JRadioButton displayModeAlphabetical = this.settingsPanel.getDisplayModeAlphabetical();
 
 
-        displayModeDefault.addActionListener(e -> {
-            model.getCurrentList().getList().sort(Comparator.comparingInt(Word::getId));
-            rearrangeWordButtons(buttonsPanel);
-        });
-        displayModeAlphabetical.addActionListener(e -> {
-            model.getCurrentList().getList().sort(Comparator.comparing(Word::getHeadword, CASE_INSENSITIVE_ORDER));
-            System.out.println(model.getCurrentList().getList().get(0).getHeadword());
-            System.out.println(model.getCurrentList().getList().get(1).getHeadword());
-            System.out.println(model.getCurrentList().getList().get(2));
-            model.getCurrentList().getList().get(3);
-
-            rearrangeWordButtons(buttonsPanel);
-        });
-    }
-    private void rearrangeWordButtons(JPanel buttonsPanel) {
-        buttonsPanel.removeAll();
-        for (Word w : model.getCurrentList().getList()) {
-            buttonsPanel.add(w.getjButton());
-        }
-        buttonsPanel.revalidate();
-        buttonsPanel.repaint();
-        //System.out.println(MockData.words.stream().map(x -> x.getWord()).findFirst());
-    }
 
     private void setBehaviorTo_Add_Button(Model model) {
 
@@ -302,6 +281,16 @@ public class Panels {
 
     }
 
+    private void managePronunciation(String headword, JCheckBox pronunciationButton) {
+        if (pronunciationButton.isSelected()) {
+            //request Words-Service API for mp3
+            InputStream mp3Stream = service.getPronunciation(headword);
+
+            MP3Player myPlayer = new MP3Player(mp3Stream);
+            myPlayer.play();
+        }
+    }
+
     private void manageWordSelection(Word w) {
         if (!Model.USE_SELECTION_MODE)
             return;
@@ -318,15 +307,7 @@ public class Panels {
             b.setForeground(Color.blue);
         }
     }
-    private void managePronunciation(String headword, JCheckBox pronunciationButton) {
-        if (pronunciationButton.isSelected()) {
-            //request Words-Service API for mp3
-            InputStream mp3Stream = service.getPronunciation(headword);
 
-            MP3Player myPlayer = new MP3Player(mp3Stream);
-            myPlayer.play();
-        }
-    }
     private void handleAddingList(JFrame frame, DefaultComboBoxModel<String> m, Model model) {
         String resultListName = showTextInputDialog(frame, "Enter new list name:");
         if (resultListName != null) {
@@ -358,7 +339,7 @@ public class Panels {
 
     }
 
-    void setBehaviorTo_SearchTextField() {
+    private void setBehaviorTo_SearchTextField() {
         JTextField searchTextField = this.getFunctionalitiesPanel().getSearchTextField();
         JPanel buttonsPanel = this.getButtonsPanel();
         searchTextField.addKeyListener(new KeyAdapter() {
@@ -437,10 +418,8 @@ public class Panels {
         return functionalitiesPanel;
     }
 
-
-
     private SettingsPanel createSettingsPanel() {
-        return new SettingsPanel();
+        return new SettingsPanel(this, this.model);
     }
 
     /**
