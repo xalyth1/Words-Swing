@@ -38,7 +38,7 @@ public class Panels {
     private DefinitionPanel definitionPanel;
     private SettingsPanel settingsPanel;
     private FunctionalitiesPanel functionalitiesPanel;
-    private JPanel buttonsPanel;
+    private ButtonsPanel buttonsPanel;
 
     public Panels(GUI gui, Model model) {
         this.gui = gui;
@@ -70,7 +70,7 @@ public class Panels {
 
     private void addBehavior() {
         this.addWords();
-        this.addBehaviorTo_Buttons(this.model);
+
         this.setBehaviorTo_SearchTextField();
         this.setBehaviorTo_listsJComboBox(this.gui, this.model);
         this.addBehaviorTo_SettingsButton();
@@ -158,7 +158,7 @@ public class Panels {
             JButton button = word.getjButton();
             buttonsPanel.add(button);
             button.addActionListener(event -> definitionTextArea.setText(word.getFullDefinition()));
-            addBehaviorToWordButton(button, /*buttonsPanel,*/ focusTextField, addToListButton, model, pronunciationCheckBox);
+            buttonsPanel.getController().addBehaviorToWordButton(button, /*buttonsPanel,*/ focusTextField, addToListButton, model, pronunciationCheckBox);
 
             newWordTextField.requestFocus();
             buttonsPanel.revalidate();
@@ -190,18 +190,7 @@ public class Panels {
         }
     }
 
-    private void addBehaviorTo_Buttons(Model model) {
-        JTextField searchTextField = this.getFunctionalitiesPanel().getSearchTextField();
-        JButton addToListButton = this.getFunctionalitiesPanel().getAddToListButton();
-        JCheckBox pronunciationButton = this.getSettingsPanel().getPronunciationCheckBox();
 
-        for (Component c : this.buttonsPanel.getComponents()) {
-            if (c instanceof JButton b) {
-                addBehaviorToWordButton(b, searchTextField, addToListButton,
-                        model, pronunciationButton);
-            }
-        }
-    }
 
     private void setBehaviorTo_listsJComboBox(GUI gui,  Model model) {
 
@@ -250,63 +239,9 @@ public class Panels {
         });
     }
 
-    private void addBehaviorToWordButton(JButton b, JTextField focusTextField, JButton addToListButton, Model model,
-                                         JCheckBox pronunciationButton) {
-        b.addActionListener(e -> {
-            focusTextField.requestFocus();
-            String wordText = b.getText();
-            Word w = model.get(wordText);
-            manageWordSelection(w);
 
-            List<Word> selected = model.getCurrentList().getList().stream()
-                    .unordered().filter(Word::isSelected).toList();
-            long selectedCount = selected.size();
-            System.out.println("SELECTED: " + selected);
-            System.out.println("SELECTED Count: " + selectedCount);
 
-            model.getCurrentList().setIsAnythingSelected(selectedCount > 0);
 
-            System.out.println("is Anything Selected? : " + model.getCurrentList().isAnythingSelected());
-
-            if (model.getCurrentList().isAnythingSelected()) {
-                addToListButton.setVisible(true);
-            } else {
-                addToListButton.setVisible(false);
-            }
-
-            //pronunciation
-            managePronunciation(w.getHeadword(), pronunciationButton);
-
-        });
-
-    }
-
-    private void managePronunciation(String headword, JCheckBox pronunciationButton) {
-        if (pronunciationButton.isSelected()) {
-            //request Words-Service API for mp3
-            InputStream mp3Stream = service.getPronunciation(headword);
-
-            MP3Player myPlayer = new MP3Player(mp3Stream);
-            myPlayer.play();
-        }
-    }
-
-    private void manageWordSelection(Word w) {
-        if (!Model.USE_SELECTION_MODE)
-            return;
-
-        JButton b = w.getjButton();
-        if (w.isSelected()) {
-            w.setSelected(false);
-            //set default colors:
-            b.setBackground(new JButton().getBackground());
-            b.setForeground(new JButton().getForeground());
-        } else {
-            w.setSelected(true);
-            b.setBackground(Color.green);
-            b.setForeground(Color.blue);
-        }
-    }
 
     private void handleAddingList(JFrame frame, DefaultComboBoxModel<String> m, Model model) {
         String resultListName = showTextInputDialog(frame, "Enter new list name:");
@@ -402,8 +337,8 @@ public class Panels {
         return southPanel;
     }
 
-    private JPanel createButtonsPanel() {
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
+    private ButtonsPanel createButtonsPanel() {
+        ButtonsPanel buttonsPanel = new ButtonsPanel(this, this.model);
         buttonsPanel.setPreferredSize(new Dimension(950,3000));
         return buttonsPanel;
     }
@@ -451,7 +386,7 @@ public class Panels {
         return functionalitiesPanel;
     }
 
-    public JPanel getButtonsPanel() {
+    public ButtonsPanel getButtonsPanel() {
         return buttonsPanel;
     }
 }
