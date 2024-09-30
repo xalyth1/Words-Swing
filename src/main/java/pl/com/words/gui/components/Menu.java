@@ -15,6 +15,7 @@ public class Menu {
         this.addListMenuItem = this.addListMenuItem();
 
         this.createMenuStructure();
+        this.setBehaviorToFileMenuItem(this.addListMenuItem);
     }
 
     private void createMenuStructure() {
@@ -40,6 +41,17 @@ public class Menu {
     private JMenuItem addListMenuItem() {
         JMenuItem addNewListJMenuItem = new JMenuItem("Add New List");
         return addNewListJMenuItem;
+    }
+
+    /**
+     * Brhavior
+     */
+
+    private void setBehaviorToFileMenuItem(JMenuItem addListMenuItem) {
+        addListMenuItem.addActionListener(e -> {
+            // open dialog, input text with list name, check if name does not exist if so, display communicate, else add new listName to Lists list
+            System.out.println("set behavior");
+        });
     }
 
     /**

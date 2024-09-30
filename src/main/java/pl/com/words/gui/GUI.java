@@ -22,7 +22,6 @@ public class GUI extends JFrame implements Runnable {
     Panels panels;
     Menu menu;
 
-
     public void run() {
     }
 
@@ -33,9 +32,8 @@ public class GUI extends JFrame implements Runnable {
         setTitle("Words - Now come easy!");
         ApplicationSettings.setUpFonts();
 
-
         this.model = new Model();
-        this.panels = new Panels(model);
+        this.panels = new Panels(this, model);
         this.menu = new Menu();
 
         this.initializeGUIStructure(model);
@@ -49,41 +47,39 @@ public class GUI extends JFrame implements Runnable {
     }
 
     private void addBehaviorToElements(Model model) {
-        BehaviorManager manager = new BehaviorManager(model);
+        //BehaviorManager manager = new BehaviorManager(model);
 
-        manager.addWords(panels.getButtonsPanel(), panels.getDefinitionPanel().getDefinitionTextArea(), model.getCurrentList());
+        //manager.addWords(panels.getButtonsPanel(), panels.getDefinitionPanel().getDefinitionTextArea(), model.getCurrentList());
 
-        manager.setBehaviorTo_SearchTextField(panels.getFunctionalitiesPanel().getSearchTextField(), panels.getButtonsPanel());
+        //manager.setBehaviorTo_SearchTextField(panels.getFunctionalitiesPanel().getSearchTextField(), panels.getButtonsPanel());
 
         JPanel buttonsPanel = panels.getButtonsPanel();
-        manager.addBehaviorTo_Buttons(buttonsPanel, panels.getFunctionalitiesPanel().getSearchTextField(), panels.getFunctionalitiesPanel().getAddToListButton(), model,
-                panels.getSettingsPanel().getPronunciationCheckBox());
+//        manager.addBehaviorTo_Buttons(buttonsPanel, panels.getFunctionalitiesPanel().getSearchTextField(), panels.getFunctionalitiesPanel().getAddToListButton(), model,
+//                panels.getSettingsPanel().getPronunciationCheckBox());
 
-        JButton settingsButton = panels.getFunctionalitiesPanel().getSettingsButton();
-        manager.addBehaviorTo_SettingsButton(settingsButton, panels.getSettingsPanel());
+//        JButton settingsButton = panels.getFunctionalitiesPanel().getSettingsButton();
+//        manager.addBehaviorTo_SettingsButton(settingsButton, panels.getSettingsPanel());
 
-
-
-        manager.setBehaviorTo_DisplayMode(buttonsPanel, panels.getSettingsPanel().getDisplayModeDefault(), panels.getSettingsPanel().getDisplayModeAlphabetical());
-        var resetSelectedWordsButton = panels.getFunctionalitiesPanel().getResetSelectedWordsButton();
-        var addToListButton = panels.getFunctionalitiesPanel().getAddToListButton();
-        manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
-        manager.setBehaviorToFileMenuItem(this.menu.getAddListMenuItem());
+        //manager.setBehaviorTo_DisplayMode(buttonsPanel, panels.getSettingsPanel().getDisplayModeDefault(), panels.getSettingsPanel().getDisplayModeAlphabetical());
+//        var resetSelectedWordsButton = panels.getFunctionalitiesPanel().getResetSelectedWordsButton();
+//        var addToListButton = panels.getFunctionalitiesPanel().getAddToListButton();
+//        manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
+        //manager.setBehaviorToFileMenuItem(this.menu.getAddListMenuItem());
         var deleteWordButton = panels.getFunctionalitiesPanel().getDeleteWordButton();
-        manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel, model);
+        //manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel, model);
 
-        var listJComboBox = panels.getFunctionalitiesPanel().getListJComboBox();
-        var currentListJLabel = panels.getNorthPanel().getCurrentListJLabel();
-        var definitionTextArea = panels.getDefinitionPanel().getDefinitionTextArea();
-        manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model, buttonsPanel,
-                definitionTextArea);
+//        var listJComboBox = panels.getFunctionalitiesPanel().getListJComboBox();
+//        var currentListJLabel = panels.getNorthPanel().getCurrentListJLabel();
+//        var definitionTextArea = panels.getDefinitionPanel().getDefinitionTextArea();
+//        manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model, buttonsPanel,
+//                definitionTextArea);
 
-        var addWordButton = panels.getFunctionalitiesPanel().getAddWordButton();
-        var newWordTextField = panels.getFunctionalitiesPanel().getNewWordTextField();
-        var searchTextField = panels.getFunctionalitiesPanel().getSearchTextField();
-        var pronunciationCheckBox = panels.getSettingsPanel().getPronunciationCheckBox();
-        manager.setBehaviorTo_Add_Button(addWordButton, newWordTextField, buttonsPanel,
-                definitionTextArea, searchTextField, addToListButton, model, pronunciationCheckBox);
+//        var addWordButton = panels.getFunctionalitiesPanel().getAddWordButton();
+//        var newWordTextField = panels.getFunctionalitiesPanel().getNewWordTextField();
+//        var searchTextField = panels.getFunctionalitiesPanel().getSearchTextField();
+//        var pronunciationCheckBox = panels.getSettingsPanel().getPronunciationCheckBox();
+//        manager.setBehaviorTo_Add_Button(addWordButton, newWordTextField, buttonsPanel,
+//                definitionTextArea, searchTextField, addToListButton, model, pronunciationCheckBox);
     }
 
     private void initializeGUIStructure(Model model) {
