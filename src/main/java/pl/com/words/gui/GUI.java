@@ -1,12 +1,10 @@
 package pl.com.words.gui;
 
-import pl.com.words.gui.components.DefinitionPanel;
 import pl.com.words.gui.components.Panels;
 import pl.com.words.model.ApplicationSettings;
 import pl.com.words.model.Model;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 import pl.com.words.gui.components.Menu;
@@ -37,49 +35,13 @@ public class GUI extends JFrame implements Runnable {
         this.menu = new Menu();
 
         this.initializeGUIStructure(model);
-        this.organizeLayout(model);
+        this.createLayout();
 
-        this.addBehaviorToElements(model);
+        this.setJMenuBar(this.menu.getMenuBar());
 
         //repaint();
         pack();
         setVisible(true);
-    }
-
-    private void addBehaviorToElements(Model model) {
-        //BehaviorManager manager = new BehaviorManager(model);
-
-        //manager.addWords(panels.getButtonsPanel(), panels.getDefinitionPanel().getDefinitionTextArea(), model.getCurrentList());
-
-        //manager.setBehaviorTo_SearchTextField(panels.getFunctionalitiesPanel().getSearchTextField(), panels.getButtonsPanel());
-
-        JPanel buttonsPanel = panels.getButtonsPanel();
-//        manager.addBehaviorTo_Buttons(buttonsPanel, panels.getFunctionalitiesPanel().getSearchTextField(), panels.getFunctionalitiesPanel().getAddToListButton(), model,
-//                panels.getSettingsPanel().getPronunciationCheckBox());
-
-//        JButton settingsButton = panels.getFunctionalitiesPanel().getSettingsButton();
-//        manager.addBehaviorTo_SettingsButton(settingsButton, panels.getSettingsPanel());
-
-        //manager.setBehaviorTo_DisplayMode(buttonsPanel, panels.getSettingsPanel().getDisplayModeDefault(), panels.getSettingsPanel().getDisplayModeAlphabetical());
-//        var resetSelectedWordsButton = panels.getFunctionalitiesPanel().getResetSelectedWordsButton();
-//        var addToListButton = panels.getFunctionalitiesPanel().getAddToListButton();
-//        manager.setBehaviorTo_resetSelectedWordsButton(resetSelectedWordsButton, addToListButton);
-        //manager.setBehaviorToFileMenuItem(this.menu.getAddListMenuItem());
-        var deleteWordButton = panels.getFunctionalitiesPanel().getDeleteWordButton();
-        //manager.setBehaviorToDeleteWordsButton(deleteWordButton, buttonsPanel, model);
-
-//        var listJComboBox = panels.getFunctionalitiesPanel().getListJComboBox();
-//        var currentListJLabel = panels.getNorthPanel().getCurrentListJLabel();
-//        var definitionTextArea = panels.getDefinitionPanel().getDefinitionTextArea();
-//        manager.setBehaviorTo_listsJComboBox(listJComboBox, this, currentListJLabel, model, buttonsPanel,
-//                definitionTextArea);
-
-//        var addWordButton = panels.getFunctionalitiesPanel().getAddWordButton();
-//        var newWordTextField = panels.getFunctionalitiesPanel().getNewWordTextField();
-//        var searchTextField = panels.getFunctionalitiesPanel().getSearchTextField();
-//        var pronunciationCheckBox = panels.getSettingsPanel().getPronunciationCheckBox();
-//        manager.setBehaviorTo_Add_Button(addWordButton, newWordTextField, buttonsPanel,
-//                definitionTextArea, searchTextField, addToListButton, model, pronunciationCheckBox);
     }
 
     private void initializeGUIStructure(Model model) {
@@ -87,9 +49,7 @@ public class GUI extends JFrame implements Runnable {
         JFrame.setDefaultLookAndFeelDecorated(true);
     }
 
-    private void associateElements() {
-        this.setJMenuBar(this.menu.getMenuBar());
-
+    private void refreshButtonsPanel() {
         JPanel buttonsPanel = panels.getButtonsPanel();
         buttonsPanel.revalidate();
         buttonsPanel.repaint();
@@ -97,16 +57,10 @@ public class GUI extends JFrame implements Runnable {
 
     private void createLayout() {
         BorderLayout mainLayout = new BorderLayout();
-        getContentPane().setLayout(mainLayout);
-        getContentPane().add(panels.getNorthPanel(), BorderLayout.PAGE_START);
-        getContentPane().add(panels.getSouthPanel(), BorderLayout.PAGE_END);
-        getContentPane().add(panels.getCentralPanel(), BorderLayout.CENTER);
-        getContentPane().add(panels.getSettingsPanel(), BorderLayout.LINE_START);
-    }
-
-    private void organizeLayout(Model model) {
-
-        associateElements();
-        createLayout();
+        this.getContentPane().setLayout(mainLayout);
+        this.getContentPane().add(this.panels.getNorthPanel(), BorderLayout.PAGE_START);
+        this.getContentPane().add(this.panels.getSouthPanel(), BorderLayout.PAGE_END);
+        this.getContentPane().add(this.panels.getCentralPanel(), BorderLayout.CENTER);
+        this.getContentPane().add(this.panels.getSettingsPanel(), BorderLayout.LINE_START);
     }
 }

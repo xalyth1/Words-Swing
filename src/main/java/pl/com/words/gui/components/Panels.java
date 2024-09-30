@@ -94,19 +94,13 @@ public class Panels {
                     if (c instanceof JButton) {
                         String wordStr = ((JButton) c).getText();
                         Word word = model.get(wordStr);
-
-
                         if (word.isSelected()) {
                             c.setVisible(!word.isSelected());
                             model.getCurrentList().getList().remove(word);
                             componentsToRemove.add(c);
                         }
-
-
-
                     }
                 }
-
                 for (Component comp : componentsToRemove) {
                     buttonsPanel.remove(comp);
                 }
