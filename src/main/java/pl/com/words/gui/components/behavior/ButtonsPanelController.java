@@ -22,22 +22,20 @@ public class ButtonsPanelController {
         this.panels = panels;
         this.buttonsPanel = buttonsPanel;
         this.model = model;
-
-
     }
 
     public void addBehavior() {
-        this.addBehaviorTo_Buttons(this.model);
+        this.setBehaviorToButtons(this.model);
     }
 
-    private void addBehaviorTo_Buttons(Model model) {
+    private void setBehaviorToButtons(Model model) {
         JTextField searchTextField = panels.getFunctionalitiesPanel().getSearchTextField();
         JButton addToListButton = panels.getFunctionalitiesPanel().getAddToListButton();
         JCheckBox pronunciationButton = panels.getSettingsPanel().getPronunciationCheckBox();
 
         for (Component c : this.buttonsPanel.getComponents()) {
             if (c instanceof JButton b) {
-                addBehaviorToWordButton(b, searchTextField, addToListButton,
+                this.addBehaviorToWordButton(b, searchTextField, addToListButton,
                         model, pronunciationButton);
             }
         }

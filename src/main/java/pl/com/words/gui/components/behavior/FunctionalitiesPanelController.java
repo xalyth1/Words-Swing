@@ -5,7 +5,6 @@ import pl.com.words.gui.GUI;
 import pl.com.words.gui.components.ButtonsPanel;
 import pl.com.words.gui.components.FunctionalitiesPanel;
 import pl.com.words.gui.components.Panels;
-import pl.com.words.gui.components.SettingsPanel;
 import pl.com.words.model.Model;
 import pl.com.words.model.Word;
 import pl.com.words.model.WordsList;
@@ -32,18 +31,18 @@ public class FunctionalitiesPanelController {
     public void addBehavior() {
         this.addWords();
         this.setBehaviorToDeleteWordsButton();
-        this.setBehaviorTo_SearchTextField();
-        this.setBehaviorTo_listsJComboBox(panels.getGui(), this.model);
-        this.addBehaviorTo_SettingsButton();
-        this.setBehaviorTo_Add_Button(this.model);
-        this.setBehaviorTo_resetSelectedWordsButton();
+        this.setBehaviorToSearchTextField();
+        this.setBehaviorTolistsJComboBox(panels.getGui(), this.model);
+        this.setBehaviorToSettingsButton();
+        this.setBehaviorToAddButton(this.model);
+        this.setBehaviorToResetSelectedWordsButton();
     }
 
     /**
      * Functionalities Panel's behavior methods
      */
 
-    private void setBehaviorTo_resetSelectedWordsButton() {
+    private void setBehaviorToResetSelectedWordsButton() {
         JButton resetSelectedWords = this.functionalitiesPanel.getResetSelectedWordsButton();
         JButton addToListButton = this.functionalitiesPanel.getAddToListButton();
 
@@ -58,7 +57,7 @@ public class FunctionalitiesPanelController {
         resetSelectedWords.addActionListener(e -> addToListButton.setVisible(false));
     }
 
-    private void setBehaviorTo_Add_Button(Model model) {
+    private void setBehaviorToAddButton(Model model) {
 
         var addWordButton = panels.getFunctionalitiesPanel().getAddWordButton();
         var newWordTextField = panels.getFunctionalitiesPanel().getNewWordTextField();
@@ -88,13 +87,13 @@ public class FunctionalitiesPanelController {
 
     }
 
-    private void addBehaviorTo_SettingsButton() {
+    private void setBehaviorToSettingsButton() {
         JButton settingsButton = panels.getFunctionalitiesPanel().getSettingsButton();
         JPanel settingsPanel = panels.getSettingsPanel();
         settingsButton.addActionListener(e -> settingsPanel.setVisible(settingsPanel.isVisible() ? false : true));
     }
 
-    private void setBehaviorTo_SearchTextField() {
+    private void setBehaviorToSearchTextField() {
         JTextField searchTextField = panels.getFunctionalitiesPanel().getSearchTextField();
         ButtonsPanel buttonsPanel = panels.getButtonsPanel();
         searchTextField.addKeyListener(new KeyAdapter() {
@@ -151,7 +150,7 @@ public class FunctionalitiesPanelController {
         });
     }
 
-    private void setBehaviorTo_listsJComboBox(GUI gui, Model model) {
+    private void setBehaviorTolistsJComboBox(GUI gui, Model model) {
         JComboBox<String> listJComboBox = panels.getFunctionalitiesPanel().getListJComboBox();
         JLabel currentListJLabel = panels.getNorthPanel().getCurrentListJLabel();
         JTextArea definitionTextArea = panels.getDefinitionPanel().getDefinitionTextArea();

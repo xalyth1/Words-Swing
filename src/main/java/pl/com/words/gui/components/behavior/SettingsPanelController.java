@@ -3,12 +3,10 @@ package pl.com.words.gui.components.behavior;
 import pl.com.words.api.WordsServiceApiClient;
 import pl.com.words.gui.components.Panels;
 import pl.com.words.gui.components.SettingsPanel;
-import pl.com.words.media.MP3Player;
 import pl.com.words.model.Model;
 import pl.com.words.model.Word;
 
 import javax.swing.*;
-import java.io.InputStream;
 import java.util.Comparator;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
@@ -27,13 +25,13 @@ public class SettingsPanelController {
     }
 
     public void addBehavior() {
-        this.setBehaviorTo_DisplayMode();
+        this.setBehaviorToDisplayMode();
     }
 
     /**
      * Settings Panel's behavior methods
      */
-    private void setBehaviorTo_DisplayMode() {
+    private void setBehaviorToDisplayMode() {
         JPanel buttonsPanel = panels.getButtonsPanel();
         JRadioButton displayModeDefault = panels.getSettingsPanel().getDisplayModeDefault();
         JRadioButton displayModeAlphabetical = panels.getSettingsPanel().getDisplayModeAlphabetical();

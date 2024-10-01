@@ -30,11 +30,11 @@ public class FunctionalitiesPanel extends JPanel {
 
     public FunctionalitiesPanel(Panels panels, Model model) {
         super(new GridBagLayout());
-        this.settingsButton = settingsButton();
-        this.resetSelectedWordsButton = resetSelectedWordsButton();
-        this.newWordTextField = newWordTextField();
-        this.addWordButton = addWordButton();
-        this.searchTextField = searchTextField();
+        this.settingsButton = this.settingsButton();
+        this.resetSelectedWordsButton = this.resetSelectedWordsButton();
+        this.newWordTextField = this.newWordTextField();
+        this.addWordButton = this.addWordButton();
+        this.searchTextField = this.searchTextField();
         this.listJComboBox = this.listsJComboBox(model.getListsNames());
         this.addToListButton = this.addSelectedToListJButton();
         this.deleteWordButton = this.deleteWordButton();
