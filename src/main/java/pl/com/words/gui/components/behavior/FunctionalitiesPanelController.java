@@ -22,10 +22,15 @@ public class FunctionalitiesPanelController {
     private FunctionalitiesPanel functionalitiesPanel;
     private Model model;
     private WordsServiceApiClient service = new WordsServiceApiClient();
+
+    private UserInputController userInputController;
+
     public FunctionalitiesPanelController(Panels panels, FunctionalitiesPanel functionalitiesPanel, Model model) {
         this.panels = panels;
         this.functionalitiesPanel = functionalitiesPanel;
         this.model = model;
+
+        this.userInputController = new UserInputController();
     }
 
     public void addBehavior() {
@@ -163,7 +168,7 @@ public class FunctionalitiesPanelController {
             String selectedOption = (String) source.getSelectedItem();
             System.out.println("Selected option: " + selectedOption);
             if (selectedOption.equals("...Add new list...")) {
-                handleAddingList(gui, m, model);
+                userInputController.handleAddingList(gui, m, model);
             } else {
                 currentListJLabel.setText("Current list: " + selectedOption);
                 //TODO
@@ -211,37 +216,13 @@ public class FunctionalitiesPanelController {
             buttonsPanel.add(b);
         }
     }
-    private void handleAddingList(JFrame frame, DefaultComboBoxModel<String> m, Model model) {
-        String resultListName = showTextInputDialog(frame, "Enter new list name:");
-        if (resultListName != null) {
-            if (listNameExists(resultListName, m)) {
-                JOptionPane.showMessageDialog(frame,
-                        "\"" + resultListName + "\" list name already exists!");
-            } else {
-                m.insertElementAt(resultListName, m.getSize() - 1);
-                model.addWordsList(new WordsList(resultListName, new ArrayList<>()));
-                JOptionPane.showMessageDialog(frame, "Added new \"" + resultListName + "\" list!");
-            }
-        }
+
+
+/**
+ * Getters
+ */
+
+    public UserInputController getUserInputController() {
+        return userInputController;
     }
-    private String showTextInputDialog(JFrame parent, String message) {
-        JTextField textField = new JTextField();
-        Object[] messageComponents = {message, textField};
-        int option = JOptionPane.showConfirmDialog(parent, messageComponents, "Create new list", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            return textField.getText();
-        }
-        return null;
-    }
-    private boolean listNameExists(String list, ComboBoxModel m) {
-        Vector<String> v = new Vector<>();
-        for (int i = 0; i < m.getSize(); i++) {
-            v.add((String)m.getElementAt(i));
-        }
-        return v.contains(list);
-
-    }
-
-
-
 }

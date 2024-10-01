@@ -80,12 +80,13 @@ public class FunctionalitiesPanel extends JPanel {
         JButton settingsButton = new JButton("Settings");
         settingsButton.setIcon(new ImageIcon("settingsIcon.png"));
         settingsButton.setPreferredSize(PREFERRED_BUTTON_DIMENSION);
-        //settingsButton.addActionListener(e -> settingsPanel.setVisible(!settingsPanel.isVisible()));
+
         return settingsButton;
     }
     private JButton resetSelectedWordsButton() {
         JButton resetSelectedWordsButton = new JButton("Reset selection");
         resetSelectedWordsButton.setToolTipText("Unselect all");
+        resetSelectedWordsButton.setPreferredSize(new Dimension(230,40));
         return resetSelectedWordsButton;
     }
 

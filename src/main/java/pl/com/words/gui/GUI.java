@@ -28,11 +28,12 @@ public class GUI extends JFrame implements Runnable {
         setLocation(900,20);
         setPreferredSize(new Dimension(1350,1100));
         setTitle("Words - Now come easy!");
-        ApplicationSettings.setUpFonts();
+        ApplicationSettings.setupUIDesign();
+        //ApplicationSettings.setAlternativeUserInterfaceColours();
 
         this.model = new Model();
         this.panels = new Panels(this, model);
-        this.menu = new Menu();
+        this.menu = new Menu(this.model, this.panels);
 
         this.initializeGUIStructure(model);
         this.createLayout();

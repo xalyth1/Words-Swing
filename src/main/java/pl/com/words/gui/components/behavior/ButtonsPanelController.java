@@ -52,12 +52,8 @@ public class ButtonsPanelController {
             List<Word> selected = model.getCurrentList().getList().stream()
                     .unordered().filter(Word::isSelected).toList();
             long selectedCount = selected.size();
-            System.out.println("SELECTED: " + selected);
-            System.out.println("SELECTED Count: " + selectedCount);
 
             model.getCurrentList().setIsAnythingSelected(selectedCount > 0);
-
-            System.out.println("is Anything Selected? : " + model.getCurrentList().isAnythingSelected());
 
             if (model.getCurrentList().isAnythingSelected()) {
                 addToListButton.setVisible(true);
@@ -65,9 +61,7 @@ public class ButtonsPanelController {
                 addToListButton.setVisible(false);
             }
 
-            //pronunciation
             managePronunciation(w.getHeadword(), pronunciationButton);
-
         });
 
     }

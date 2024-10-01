@@ -1,5 +1,8 @@
 package pl.com.words.gui.components;
 
+import pl.com.words.gui.components.behavior.MenuController;
+import pl.com.words.model.Model;
+
 import javax.swing.*;
 
 public class Menu {
@@ -8,14 +11,22 @@ public class Menu {
     private JMenu subMenu;
     private JMenuItem addListMenuItem;
 
-    public Menu() {
+    private Model model;
+    private Panels panels;
+    private MenuController controller;
+
+    public Menu(Model model, Panels panels) {
         this.menuBar = this.menuBar();
         this.menu = this.menu();
         this.subMenu = this.fileSubMenu();
         this.addListMenuItem = this.addListMenuItem();
 
         this.createMenuStructure();
-        this.setBehaviorToFileMenuItem(this.addListMenuItem);
+
+        this.panels = panels;
+        this.model = model;
+        this.controller = new MenuController(this, this.panels, this.model);
+        this.controller.addBehavior();
     }
 
     private void createMenuStructure() {
@@ -43,16 +54,7 @@ public class Menu {
         return addNewListJMenuItem;
     }
 
-    /**
-     * Brhavior
-     */
 
-    private void setBehaviorToFileMenuItem(JMenuItem addListMenuItem) {
-        addListMenuItem.addActionListener(e -> {
-            // open dialog, input text with list name, check if name does not exist if so, display communicate, else add new listName to Lists list
-            System.out.println("set behavior");
-        });
-    }
 
     /**
      * Getters
