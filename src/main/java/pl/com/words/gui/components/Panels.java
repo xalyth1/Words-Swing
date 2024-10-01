@@ -69,15 +69,15 @@ public class Panels {
     }
 
     private void addBehavior() {
-        this.addWords();
+        //this.addWords();
 
-        this.setBehaviorTo_SearchTextField();
-        this.setBehaviorTo_listsJComboBox(this.gui, this.model);
-        this.addBehaviorTo_SettingsButton();
-        this.setBehaviorTo_Add_Button(this.model);
+        //this.setBehaviorTo_SearchTextField();
+        //this.setBehaviorTo_listsJComboBox(this.gui, this.model);
+//        this.addBehaviorTo_SettingsButton();
+//        this.setBehaviorTo_Add_Button(this.model);
         //this.setBehaviorTo_DisplayMode();
-        this.setBehaviorTo_resetSelectedWordsButton();
-        this.setBehaviorToDeleteWordsButton(this.model);
+        //this.setBehaviorTo_resetSelectedWordsButton();
+        //this.setBehaviorToDeleteWordsButton(this.model);
 
 
         this.panelsController.addBehavior();
@@ -88,222 +88,17 @@ public class Panels {
      * Behavior methods
      */
 
-    private void setBehaviorToDeleteWordsButton(Model model) {
-        JButton deleteJButton = this.functionalitiesPanel.getDeleteWordButton();
-        JPanel buttonsPanel = this.buttonsPanel;
-        deleteJButton.addActionListener(e -> {
-            Component[] components = buttonsPanel.getComponents();
-
-            List<Component> componentsToRemove = new ArrayList<>();
-            if (model.getCurrentList().isAnythingSelected()) {
-                for (Component c : components) {
-                    if (c instanceof JButton) {
-                        String wordStr = ((JButton) c).getText();
-                        Word word = model.get(wordStr);
-                        if (word.isSelected()) {
-                            c.setVisible(!word.isSelected());
-                            model.getCurrentList().getList().remove(word);
-                            componentsToRemove.add(c);
-                        }
-                    }
-                }
-                for (Component comp : componentsToRemove) {
-                    buttonsPanel.remove(comp);
-                }
-            }
-        });
-    }
-
-
-    private void setBehaviorTo_resetSelectedWordsButton() {
-        JButton resetSelectedWords = this.functionalitiesPanel.getResetSelectedWordsButton();
-        JButton addToListButton = this.functionalitiesPanel.getAddToListButton();
-
-        Color bgDefaultColor = new JButton().getBackground();
-        Color fgDefaultColor = new JButton().getForeground();
-        resetSelectedWords.addActionListener(e -> model.getCurrentList().getList().stream().forEach(x -> {
-            x.setSelected(false);
-            x.getjButton().setBackground(bgDefaultColor);
-            x.getjButton().setForeground(fgDefaultColor);
-        }));
-
-        resetSelectedWords.addActionListener(e -> addToListButton.setVisible(false));
-    }
-
-
-
-
-    private void setBehaviorTo_Add_Button(Model model) {
-
-        var addWordButton = this.getFunctionalitiesPanel().getAddWordButton();
-        var newWordTextField = this.getFunctionalitiesPanel().getNewWordTextField();
-        var searchTextField = this.getFunctionalitiesPanel().getSearchTextField();
-        var pronunciationCheckBox = this.getSettingsPanel().getPronunciationCheckBox();
-        var buttonsPanel = this.getButtonsPanel();
-        var definitionTextArea = this.getDefinitionPanel().getDefinitionTextArea();
-        var focusTextField = this.getFunctionalitiesPanel().getNewWordTextField();
-        JButton addToListButton = this.getFunctionalitiesPanel().getAddToListButton();
-
-
-
-        addWordButton.addActionListener( e -> {
-            String headword = newWordTextField.getText().toLowerCase();
-            newWordTextField.setText("");
-
-
-
-            String jsonDefinition = service.getDefinitions(headword);
-            Word word = model.createWordObject(headword, jsonDefinition);
-            model.addWordToCurrentList(word);
-            JButton button = word.getjButton();
-            buttonsPanel.add(button);
-            button.addActionListener(event -> definitionTextArea.setText(word.getFullDefinition()));
-            buttonsPanel.getController().addBehaviorToWordButton(button, /*buttonsPanel,*/ focusTextField, addToListButton, model, pronunciationCheckBox);
-
-            newWordTextField.requestFocus();
-            buttonsPanel.revalidate();
-            buttonsPanel.repaint();
-        });
-
-    }
-
-    private void addBehaviorTo_SettingsButton() {
-        JButton settingsButton = this.getFunctionalitiesPanel().getSettingsButton();
-        JPanel settingsPanel = this.getSettingsPanel();
-        settingsButton.addActionListener(e -> settingsPanel.setVisible(settingsPanel.isVisible() ? false : true));
-    }
-
-
-    /**
-     * addWords method is used to adding the word Buttons
-     * to the initial word List visual representation (buttonsPanel)
-     */
-    private void addWords() {
-        JPanel buttonsPanel = this.getButtonsPanel();
-        JTextArea definitionTextArea = this.definitionPanel.getDefinitionTextArea();
-        WordsList currentWordsList = model.getCurrentList();
-        List<Word> actualWords = currentWordsList.getList();
-        for (Word w : actualWords) {
-            JButton b = w.getjButton();
-            b.addActionListener(e -> definitionTextArea.setText(w.getFullDefinition()));
-            buttonsPanel.add(b);
-        }
-    }
-
-
-
-    private void setBehaviorTo_listsJComboBox(GUI gui,  Model model) {
-
-        JComboBox<String> listJComboBox = this.getFunctionalitiesPanel().getListJComboBox();
-        JLabel currentListJLabel = this.getNorthPanel().getCurrentListJLabel();
-        JTextArea definitionTextArea = this.getDefinitionPanel().getDefinitionTextArea();
-        JPanel buttonsPanel = this.getButtonsPanel();
-
-        DefaultComboBoxModel<String> m = (DefaultComboBoxModel<String>) listJComboBox.getModel();
-
-        listJComboBox.addActionListener(e -> {
-            JComboBox<String> source = (JComboBox<String>) e.getSource();
-            String selectedOption = (String) source.getSelectedItem();
-            System.out.println("Selected option: " + selectedOption);
-            if (selectedOption.equals("...Add new list...")) {
-                handleAddingList(gui, m, model);
-            } else {
-                currentListJLabel.setText("Current list: " + selectedOption);
-                //TODO
-                // change buttonsPanel to show newly selected list's words
-                //buttons
-
-                //search for selectedOption in model . wordslist . list names
-                try {
-                    WordsList wl = model.getList(selectedOption);
-
-                    model.setCurrentList(wl);
-
-                    //remove buttons from previous list
-                    buttonsPanel.removeAll();
-
-                    //add buttons from newly selected list to buttonsPanel JPanel
-                    //addWords(buttonsPanel, definitionTextArea, model.getCurrentList());
-                    addWords();
-
-                    buttonsPanel.revalidate();
-                    buttonsPanel.repaint();
-
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(gui,"Program error. There is no selected list in the model");
-                }
-
-            }
-        });
-    }
 
 
 
 
 
-    private void handleAddingList(JFrame frame, DefaultComboBoxModel<String> m, Model model) {
-        String resultListName = showTextInputDialog(frame, "Enter new list name:");
-        if (resultListName != null) {
-            if (listNameExists(resultListName, m)) {
-                JOptionPane.showMessageDialog(frame,
-                        "\"" + resultListName + "\" list name already exists!");
-            } else {
-                m.insertElementAt(resultListName, m.getSize() - 1);
-                model.addWordsList(new WordsList(resultListName, new ArrayList<>()));
-                JOptionPane.showMessageDialog(frame, "Added new \"" + resultListName + "\" list!");
-            }
-        }
-    }
-    private String showTextInputDialog(JFrame parent, String message) {
-        JTextField textField = new JTextField();
-        Object[] messageComponents = {message, textField};
-        int option = JOptionPane.showConfirmDialog(parent, messageComponents, "Create new list", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            return textField.getText();
-        }
-        return null;
-    }
-    private boolean listNameExists(String list, ComboBoxModel m) {
-        Vector<String> v = new Vector<>();
-        for (int i = 0; i < m.getSize(); i++) {
-            v.add((String)m.getElementAt(i));
-        }
-        return v.contains(list);
 
-    }
 
-    private void setBehaviorTo_SearchTextField() {
-        JTextField searchTextField = this.getFunctionalitiesPanel().getSearchTextField();
-        JPanel buttonsPanel = this.getButtonsPanel();
-        searchTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                super.keyReleased(e);
-                JTextField textField = (JTextField) e.getSource();
-                String text = textField.getText();
-                System.out.println("TEXT: " + text );
-                filterButtons(text, buttonsPanel);
-            }
-        });
-    }
 
-    private void filterButtons(String text, JPanel buttonsPanel) {
-        var components = buttonsPanel.getComponents();
-        if (text == null || text.equals("")) {
-            for (Component c : components) {
-                c.setVisible(true);
-            }
-        } else {
-            for (Component c : components) {
-                if (c instanceof JButton b) {
-                    int len = text.length();
-                    b.setVisible(b.getText().length() >= len && b.getText().substring(0, len).equals(text));
-                }
-            }
-        }
-    }
+
+
+
 
     /**
      *
@@ -348,7 +143,7 @@ public class Panels {
     }
 
     private FunctionalitiesPanel createFunctionalitiesPanel(Model model) {
-        FunctionalitiesPanel functionalitiesPanel = new FunctionalitiesPanel(model);
+        FunctionalitiesPanel functionalitiesPanel = new FunctionalitiesPanel(this, this.model);
 
         return functionalitiesPanel;
     }
@@ -388,5 +183,9 @@ public class Panels {
 
     public ButtonsPanel getButtonsPanel() {
         return buttonsPanel;
+    }
+
+    public GUI getGui() {
+        return gui;
     }
 }

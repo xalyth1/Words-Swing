@@ -1,6 +1,7 @@
 package pl.com.words.gui.components;
 
 import pl.com.words.gui.GUI;
+import pl.com.words.gui.components.behavior.FunctionalitiesPanelController;
 import pl.com.words.model.ApplicationSettings;
 import pl.com.words.model.Model;
 
@@ -23,7 +24,11 @@ public class FunctionalitiesPanel extends JPanel {
     private JButton addToListButton;
     private JButton deleteWordButton;
 
-    public FunctionalitiesPanel(Model model) {
+    private Model model;
+    private Panels panels;
+    private FunctionalitiesPanelController controller;
+
+    public FunctionalitiesPanel(Panels panels, Model model) {
         super(new GridBagLayout());
         this.settingsButton = settingsButton();
         this.resetSelectedWordsButton = resetSelectedWordsButton();
@@ -33,6 +38,10 @@ public class FunctionalitiesPanel extends JPanel {
         this.listJComboBox = this.listsJComboBox(model.getListsNames());
         this.addToListButton = this.addSelectedToListJButton();
         this.deleteWordButton = this.deleteWordButton();
+
+        this.model = model;
+        this.panels = panels;
+        this.controller = new FunctionalitiesPanelController(this.panels, this, this.model);
 
         //GridBagLayout layout = new GridBagLayout();
         this.addSubPanelStructureToFunctionalitiesPanel();
@@ -187,5 +196,9 @@ public class FunctionalitiesPanel extends JPanel {
 
     public JButton getDeleteWordButton() {
         return deleteWordButton;
+    }
+
+    public FunctionalitiesPanelController getController() {
+        return controller;
     }
 }

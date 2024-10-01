@@ -20,6 +20,7 @@ public class PanelsController {
     }
 
     public void addBehavior() {
+        this.panels.getFunctionalitiesPanel().getController().addBehavior();
         this.panels.getSettingsPanel().getController().addBehavior();
 
         //this.addBehaviorTo_Buttons(this.model);
