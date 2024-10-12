@@ -1,0 +1,14 @@
+CREATE TABLE Words (
+    id INTEGER PRIMARY KEY UNIQUE,
+    headword TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE Definitions (
+    id INTEGER PRIMARY KEY UNIQUE,
+    definition TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE WordsLists (
+    id INTEGER PRIMARY KEY UNIQUE,
+    name TEXT NOT NULL
+);
