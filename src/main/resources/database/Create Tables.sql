@@ -24,7 +24,7 @@ CREATE TABLE Words_Lists (
     name TEXT NOT NULL
 );
 
-INSERT INTO Words_Lists VALUES (1, "initial list")
+INSERT INTO Words_Lists VALUES (1, "initial list");
 
 CREATE TABLE Words_List_Items (
     words_list_id INTEGER REFERENCES Words_Lists(id),
