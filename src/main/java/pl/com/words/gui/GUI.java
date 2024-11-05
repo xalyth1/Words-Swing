@@ -16,9 +16,9 @@ import pl.com.words.gui.components.Menu;
  * Updates and development: 07-10  -  2024
  */
 public class GUI extends JFrame implements Runnable {
-    Model model;
-    Panels panels;
-    Menu menu;
+    private Model model;
+    private Panels panels;
+    private Menu menu;
 
     public void run() {
     }

@@ -17,6 +17,7 @@ import java.util.List;
 
 
 public class WordsServiceApiClient {
+    private static final String pronunciationUrl = "http://localhost:8080/pronunciation/";
 
     public static void main(String[] args) {
         WordsServiceApiClient client = new WordsServiceApiClient();
@@ -30,7 +31,7 @@ public class WordsServiceApiClient {
 
 
     public InputStream getPronunciation(String headword) {
-        String apiUrl = "http://localhost:8080/pronunciation/" + headword;
+        String apiUrl = pronunciationUrl + headword;
         InputStream mp3 = null;
         try {
             mp3 = fetchPronunciationFromApi(apiUrl);

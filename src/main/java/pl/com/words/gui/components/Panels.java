@@ -69,35 +69,10 @@ public class Panels {
     }
 
     private void addBehavior() {
-        //this.addWords();
-
-        //this.setBehaviorTo_SearchTextField();
-        //this.setBehaviorTo_listsJComboBox(this.gui, this.model);
-//        this.addBehaviorTo_SettingsButton();
-//        this.setBehaviorTo_Add_Button(this.model);
-        //this.setBehaviorTo_DisplayMode();
-        //this.setBehaviorTo_resetSelectedWordsButton();
-        //this.setBehaviorToDeleteWordsButton(this.model);
 
 
         this.panelsController.addBehavior();
     }
-
-
-    /**
-     * Behavior methods
-     */
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
