@@ -42,3 +42,7 @@ build/
 src/main/resources/Documentation
 src/main/resources/screen.png
 src/main/resources/wordsMock.txt
+
+### Properties profile files ###
+src/main/resources/application-development.properties
+src/main/resources/application-production.properties
