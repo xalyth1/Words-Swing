@@ -1,5 +1,7 @@
 package pl.com.words.persistence;
 
+import pl.com.words.configuration.ConfigLoader;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -57,13 +59,7 @@ public class Database {
     }
 
     private static Connection getConnection() throws SQLException {
-        Properties properties = new Properties();
-        try (InputStream inputStream = Files.newInputStream(Paths.get("src/main/resources/database.properties"))) {
-            properties.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String url = properties.getProperty("jdbc.url");
+        String url = ConfigLoader.getInstance().getProperty("jdbc.url");
         return DriverManager.getConnection(url);
     }
 }

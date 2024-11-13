@@ -59,10 +59,7 @@
         </dependency>
     </dependencies>
 
-
-
     <build>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -89,8 +86,5 @@
                 </executions>
             </plugin>
         </plugins>
-
     </build>
-
-
 </project>

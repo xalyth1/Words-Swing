@@ -10,13 +10,18 @@ public class ConfigLoader {
         String x = configLoader.getProperty("jdbc.url");
         System.out.println(x);
     }
+
+    private static ConfigLoader configLoader = new ConfigLoader();
+
+    public static ConfigLoader getInstance(){
+        return configLoader;
+    }
+
     private Properties properties = new Properties();
 
-    public ConfigLoader() {
-        // development here is default value
-        String profile = System.getProperty("profile.env", "development");
-        String propertiesFile =
-                String.format("/application-%s.properties", profile);
+    private ConfigLoader() {
+        String profile = System.getProperty("profile.env", "development"); // development as default value
+        String propertiesFile = String.format("/application-%s.properties", profile);
         try (InputStream input = getClass().getResourceAsStream(propertiesFile)) {
             if (input == null) {
                 throw new RuntimeException("Nie znaleziono pliku właściwości: " + propertiesFile);
