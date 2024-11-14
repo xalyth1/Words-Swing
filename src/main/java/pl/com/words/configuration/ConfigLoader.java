@@ -30,6 +30,20 @@ public class ConfigLoader {
         } catch (IOException e) {
             throw new RuntimeException("Błąd podczas ładowania pliku właściwości: " + propertiesFile, e);
         }
+        this.createProductionDatabasePath();
+    }
+    private void createProductionDatabasePath() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String dbPath;
+        if (os.contains("win")) {
+            dbPath = "C:\\ProgramData\\WordsVocabularyLearning\\WordsDatabase.db";
+        } else {
+            dbPath = "/var/lib/WordsVocabularyLearning/WordsDatabase.db";
+        }
+        String dbPathPlaceholder = properties.getProperty("jdbc.url");
+        if (dbPathPlaceholder != null && dbPathPlaceholder.equals("{os-specific-path}")) {
+            properties.setProperty("database.path", dbPath);
+        }
     }
 
     public String getProperty(String key) {

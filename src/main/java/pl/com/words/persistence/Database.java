@@ -1,19 +1,32 @@
 package pl.com.words.persistence;
 
 import pl.com.words.configuration.ConfigLoader;
+import pl.com.words.model.Word;
 
+import javax.swing.plaf.nimbus.State;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.List;
 import java.util.Properties;
 
 public class Database {
 
     public static void main(String[] args) {
-        Database.createSchemaIfNotExists();
+        Database database = new Database();
+        database.createSchemaIfNotExists();
+
+        Word word = new Word("heat", List.of("upał"));
+
+        database.addWord(word);
+
     }
+
+
+    private Connection connection = null;
+
     private static final String CREATE_DB_SQL = """
             CREATE TABLE IF NOT EXISTS Words (
                 id INTEGER PRIMARY KEY,
@@ -48,18 +61,46 @@ public class Database {
             );
             """;
 
-    private static void createSchemaIfNotExists() {
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(CREATE_DB_SQL);
+    Database() {
+        this.connection = this.getConnection();
+        this.createSchemaIfNotExists();
+    }
 
+    private boolean addWord(Word word) {
+        String INSERT_WORD_SQL = """
+                INSERT INTO Words(headword)
+                VALUES (?);
+                """;
+
+        String headword = word.getHeadword();
+
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_WORD_SQL)){
+            preparedStatement.setString(1, headword);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private void createSchemaIfNotExists() {
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(CREATE_DB_SQL);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private static Connection getConnection() throws SQLException {
+    private Connection getConnection() {
         String url = ConfigLoader.getInstance().getProperty("jdbc.url");
-        return DriverManager.getConnection(url);
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            throw new RuntimeException("Creating connection to database not succeded!");
+        }
+        return connection;
     }
 }
