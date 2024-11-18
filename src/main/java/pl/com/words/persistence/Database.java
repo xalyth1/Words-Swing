@@ -72,6 +72,9 @@ public class Database {
                 VALUES (?);
                 """;
 
+        String INSERT_DEFINITION_SQL;
+        String INSERT_WORDS_DEFINITIONS_SQL;
+
         String headword = word.getHeadword();
 
 
@@ -84,6 +87,25 @@ public class Database {
         }
         return true;
     }
+
+    //private boolean deleteWord(Word word) {
+    //    String DELETE_WORD_SQL = """
+    //            DELETE FROM Words
+    //            WHERE Words.headword = ?;
+    //            """;
+    //
+    //    String headword = word.getHeadword();
+    //
+    //
+    //    try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_WORD_SQL)){
+    //        preparedStatement.setString(1, headword);
+    //        preparedStatement.executeUpdate();
+    //
+    //    } catch (SQLException e) {
+    //        e.printStackTrace();
+    //    }
+    //    return true;
+    //}
 
     private void createSchemaIfNotExists() {
         try (Statement statement = connection.createStatement()) {
