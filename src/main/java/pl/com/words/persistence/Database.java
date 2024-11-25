@@ -20,7 +20,8 @@ public class Database {
 
         Word word = new Word("heat", List.of("upał"));
 
-        database.addWord(word);
+        //database.addWord(word);
+        database.delete(1);
 
     }
 
@@ -87,6 +88,48 @@ public class Database {
         }
         return true;
     }
+
+    private boolean delete(int wordId) {
+        //1. delete from Word_Definitions table
+        String DELETE_FROM_WORD_DEFINITIONS = """
+                DELETE FROM Words_Definitions
+                WHERE Words_Definitions.word_id = ?;
+                """;
+
+        //2. delete from Word_List_Items table
+        String DELETE_FROM_WORD_LIST_ITEMS = """
+                DELETE FROM Words_List_Items
+                WHERE Words_List_Items.word_id = ?;
+                """;
+
+        //3. delete from Words table
+        String DELETE_WORD_BY_ID = """
+                DELETE FROM Words
+                WHERE Words.id = ?;
+                """;
+
+        try (PreparedStatement deleteFromWordDefinitions = connection.prepareStatement(DELETE_FROM_WORD_DEFINITIONS);
+             PreparedStatement deleteFromWordListItems = connection.prepareStatement(DELETE_FROM_WORD_LIST_ITEMS);
+             PreparedStatement deleteWord = connection.prepareStatement(DELETE_WORD_BY_ID)) {
+            connection.setAutoCommit(false);
+
+            deleteFromWordDefinitions.setInt(1, wordId);
+            deleteFromWordDefinitions.executeUpdate();
+
+            deleteFromWordListItems.setInt(1, wordId);
+            deleteFromWordListItems.executeUpdate();
+
+            deleteWord.setInt(1, wordId);
+            deleteWord.executeUpdate();
+
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+
 
     //private boolean deleteWord(Word word) {
     //    String DELETE_WORD_SQL = """
