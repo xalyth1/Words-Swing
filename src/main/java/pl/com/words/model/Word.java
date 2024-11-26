@@ -16,6 +16,9 @@ public class Word implements Comparable<Word>{
     private final int id;
     private final String headword;
 
+    /**
+     * List of dictionary definitions
+     */
     private final List<String> definitions;
 
     /**
@@ -23,6 +26,9 @@ public class Word implements Comparable<Word>{
      */
     private final String simplifiedDefinition;
 
+    /**
+     * All definitions in one string value
+     */
     private final String fullDefinition;
 
     private final JButton jButton;

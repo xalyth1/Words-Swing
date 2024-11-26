@@ -4,12 +4,15 @@ import pl.com.words.configuration.ConfigLoader;
 import pl.com.words.model.Word;
 
 import javax.swing.plaf.nimbus.State;
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 public class Database {
@@ -69,24 +72,109 @@ public class Database {
 
     private boolean addWord(Word word) {
         String INSERT_WORD_SQL = """
-                INSERT INTO Words(headword)
+                INSERT OR IGNORE INTO Words(headword)
                 VALUES (?);
                 """;
 
-        String INSERT_DEFINITION_SQL;
+        String INSERT_DEFINITION_SQL = """
+                INSERT OR IGNORE INTO Definitions(definition)
+                VALUES(?);
+                """;
         String INSERT_WORDS_DEFINITIONS_SQL;
 
         String headword = word.getHeadword();
 
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_WORD_SQL)){
-            preparedStatement.setString(1, headword);
-            preparedStatement.executeUpdate();
+        try (PreparedStatement insertIntoWords = connection.prepareStatement(INSERT_WORD_SQL);
+             PreparedStatement insertDefinition = connection.prepareStatement(INSERT_DEFINITION_SQL)){
+            //Insert into words
+            insertIntoWords.setString(1, headword);
+            int updatedRows = insertIntoWords.executeUpdate();
+            if (updatedRows != 0) {  // headword does not exist in table
+                //insert all definitions
+                insertDefinition.setString(1, word.getDefinitions());
+                insertDefinition.executeUpdate();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    /**
+     *
+     * @param definitions - list of dictionary definitions to insert into Definitions Table
+     * @return List of inserted rows IDs database Definitions Table
+     */
+    private List<Integer> insertDefinitions(List<String> definitions) {
+        List<Integer> ids = new ArrayList<>();
+
+        String INSERT_DEFINITION_SQL = """
+                INSERT OR IGNORE INTO Definitions(definition)
+                VALUES(?);
+                """;
+
+        String SELECT_DEFINITION = """
+                SELECT id FROM Definitions WHERE definition = (?);
+                """;
+        try (PreparedStatement insertAllDefinitions = connection.prepareStatement(INSERT_DEFINITION_SQL);
+             PreparedStatement selectDefinition = connection.prepareStatement(SELECT_DEFINITION)) {
+            for (String definition : definitions) {
+                insertAllDefinitions.setString(1, definition);
+                int updatedRows = insertAllDefinitions.executeUpdate();
+                if (updatedRows == 0) {
+                    selectDefinition.setString(1, definition);
+                    ResultSet rs = selectDefinition.executeQuery();
+                    if (rs.next()) {
+                        //TODO
+
+                    }
+                } else {
+
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Optional<Long> insertDefinition(String definition) throws DatabaseException {
+        Optional<Long> id = Optional.empty();
+        String INSERT_DEFINITION_SQL = """
+                INSERT OR IGNORE INTO Definitions(definition)
+                VALUES(?);
+                """;
+        String SELECT_DEFINITION = """
+                SELECT id FROM Definitions WHERE definition = (?);
+                """;
+        try (PreparedStatement insertDefinitionPStmt = connection.prepareStatement(INSERT_DEFINITION_SQL);
+             PreparedStatement selectDefinitionPStmt = connection.prepareStatement(SELECT_DEFINITION)) {
+            insertDefinitionPStmt.setString(1, definition);
+            int updatedRows = insertDefinitionPStmt.executeUpdate();
+            if (updatedRows == 0) { //
+                selectDefinitionPStmt.setString(1, definition);
+                ResultSet rs = selectDefinitionPStmt.executeQuery();
+                if (rs.next()) {
+                    long defId = rs.getInt("id");
+                    id = Optional.of(defId);
+                    if (rs.next()) {
+                        // Result set has more than 1 value - Unexpected database consistency problem
+                        throw new DatabaseException("Unexpected database behavior. ResultSet has more than one value");
+                    }
+                }
+            } else {
+                ResultSet generatedKeys = insertDefinitionPStmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    long generatedId = generatedKeys.getLong(1);
+                    id = Optional.of(generatedId);
+                }
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 
     private boolean delete(int wordId) {
