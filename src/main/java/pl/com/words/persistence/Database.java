@@ -3,17 +3,10 @@ package pl.com.words.persistence;
 import pl.com.words.configuration.ConfigLoader;
 import pl.com.words.model.Word;
 
-import javax.swing.plaf.nimbus.State;
-import javax.swing.text.html.Option;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 public class Database {
 
@@ -65,9 +58,105 @@ public class Database {
             );
             """;
 
-    Database() {
-        this.connection = this.getConnection();
-        this.createSchemaIfNotExists();
+    private final String DROP_ALL_TABLES = """
+            DROP TABLE Words_List_Items;
+            DROP TABLE Words_Lists;
+            DROP TABLE Words_Definitions;
+            DROP TABLE Words;
+            DROP TABLE Definitions;
+            """;
+
+    private final String INSERT_DATA = """
+            INSERT INTO Words VALUES (1, "extraordinary");
+            INSERT INTO Words VALUES (2, "fluent");
+            INSERT INTO Words VALUES (3, "art");
+            INSERT INTO Words VALUES (4, "market");
+            INSERT INTO Definitions VALUES (1, "wyjątkowy");
+            INSERT INTO Definitions VALUES (2, "niezwykły");
+            INSERT INTO Definitions VALUES (3, "niesłychany");
+            INSERT INTO Definitions VALUES (4, "biegły, płynny");
+            INSERT INTO Definitions VALUES (5, "sztuka");
+            INSERT INTO Definitions VALUES (6, "rynek");
+            INSERT INTO Words_Definitions VALUES(1,1,1);
+            INSERT INTO Words_Definitions VALUES(2,1,2);
+            INSERT INTO Words_Definitions VALUES(3,1,3);
+            INSERT INTO Words_Definitions VALUES(4,2,4);
+            INSERT INTO Words_Definitions VALUES(5,3,5);
+            INSERT INTO Words_Definitions VALUES(6,4,6);
+                        
+                        
+            INSERT INTO Words_Lists VALUES (1, "initial list");
+            INSERT INTO Words_List_Items VALUES (1, 1);
+            INSERT INTO Words_List_Items VALUES (1, 3);
+                        
+            INSERT INTO Words_Lists VALUES (2, "second list");
+            INSERT INTO Words_List_Items VALUES (2, 2);
+            INSERT INTO Words_List_Items VALUES (2, 4);
+            """;
+
+    public Database() {
+        this.connection = this.createConnection();
+    }
+
+    public Database(boolean createSchema) {
+        this();
+        if (createSchema) {
+            this.createSchemaIfNotExists();
+            this.insertData();
+        }
+
+
+
+    }
+
+    private void insertData() {
+        try (PreparedStatement pstmt = this.connection.prepareStatement(INSERT_DATA)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void queryDatabase(String query) {
+        try (PreparedStatement pstmt = this.connection.prepareStatement(query)) {
+            try(ResultSet rs = pstmt.executeQuery()){
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    /*
+    addWord(Word word)
+    if (word.headrod exists in database) {
+        do nothing
+    } else {
+        // headword does not exist
+        database_word_id = insertIntoWords(headword)
+        insert definitions(word.definitions, database_word_id)
+
+    }
+
+     */
+
+    //check if given headword exists in database
+    public boolean exists(String headword) {
+        String query = "SELECT headword FROM Words WHERE headword = (?)";
+        boolean result = false;
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, headword);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    result = true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     private boolean addWord(Word word) {
@@ -90,10 +179,9 @@ public class Database {
             //Insert into words
             insertIntoWords.setString(1, headword);
             int updatedRows = insertIntoWords.executeUpdate();
-            if (updatedRows != 0) {  // headword does not exist in table
+            if (updatedRows != 0) {  // headword does not exist in the table
                 //insert all definitions
-                insertDefinition.setString(1, word.getDefinitions());
-                insertDefinition.executeUpdate();
+                insertDefinitions(word.getDefinitions());
             }
 
         } catch (SQLException e) {
@@ -137,6 +225,7 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     private Optional<Long> insertDefinition(String definition) throws DatabaseException {
@@ -246,7 +335,7 @@ public class Database {
         }
     }
 
-    private Connection getConnection() {
+     private Connection createConnection() {
         String url = ConfigLoader.getInstance().getProperty("jdbc.url");
         Connection connection = null;
         try {
@@ -255,5 +344,9 @@ public class Database {
             throw new RuntimeException("Creating connection to database not succeded!");
         }
         return connection;
+    }
+
+    public Connection getConnection() {
+        return this.connection;
     }
 }
