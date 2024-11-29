@@ -26,13 +26,13 @@ public class DatabaseTest {
 
     @Test
     public void testExists_whenHeadwordExists_returnsTrue() {
-        // Zakładając, że w tabeli words istnieje headword "test"
+        // Zakładając, że w tabeli words istnieje headword "extraordinary"
         String headword = "extraordinary";
 
-        // Przygotowanie testowej sytuacji - headword "test" ma istnieć w bazie
+        // Przygotowanie testowej sytuacji - headword "extraordinary" ma istnieć w bazie
         boolean result = database.exists(headword);
 
-        // Sprawdzamy, czy metoda zwróciła prawdę
+        // Sprawdzamy, czy metoda zwróciła true
         assertTrue(result, "The headword should exist in the database.");
     }
 

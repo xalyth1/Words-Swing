@@ -173,13 +173,17 @@ public class Database {
 
         String headword = word.getHeadword();
 
+        if (this.exists(headword)) {
+            return false;
+        }
+
 
         try (PreparedStatement insertIntoWords = connection.prepareStatement(INSERT_WORD_SQL);
              PreparedStatement insertDefinition = connection.prepareStatement(INSERT_DEFINITION_SQL)){
             //Insert into words
             insertIntoWords.setString(1, headword);
             int updatedRows = insertIntoWords.executeUpdate();
-            if (updatedRows != 0) {  // headword does not exist in the table
+            if (updatedRows != 0) {
                 //insert all definitions
                 insertDefinitions(word.getDefinitions());
             }
@@ -344,6 +348,14 @@ public class Database {
             throw new RuntimeException("Creating connection to database not succeded!");
         }
         return connection;
+    }
+
+    private Connection createConnection(boolean testMode) {
+        if (!testMode) {
+            return this.createConnection();
+        } else {
+
+        }
     }
 
     public Connection getConnection() {
