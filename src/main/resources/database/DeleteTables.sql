@@ -1,5 +1,5 @@
-DROP TABLE Words_List_Items;
-DROP TABLE Words_Lists;
-DROP TABLE Words_Definitions;
-DROP TABLE Words;
-DROP TABLE Definitions;
+DROP TABLE IF EXISTS Words_List_Items;
+DROP TABLE IF EXISTS Words_Lists;
+DROP TABLE IF EXISTS Words_Definitions;
+DROP TABLE IF EXISTS Words;
+DROP TABLE IF EXISTS Definitions;

@@ -11,13 +11,14 @@ import java.util.Optional;
 public class Database {
 
     public static void main(String[] args) {
-        Database database = new Database();
-        database.createSchemaIfNotExists();
+        Database database = new Database(true);
 
-        Word word = new Word("heat", List.of("upał"));
 
-        //database.addWord(word);
-        database.delete(1);
+        //
+        //Word word = new Word("heat", List.of("upał"));
+        //
+        ////database.addWord(word);
+        //database.delete(1);
 
     }
 
@@ -59,12 +60,11 @@ public class Database {
             """;
 
     private final String DROP_ALL_TABLES = """
-            DROP TABLE Words_List_Items;
-            DROP TABLE Words_Lists;
-            DROP TABLE Words_Definitions;
-            DROP TABLE Words;
-            DROP TABLE Definitions;
-            """;
+            DROP TABLE IF EXISTS Words_List_Items;
+            DROP TABLE IF EXISTS Words_Lists;
+            DROP TABLE IF EXISTS Words_Definitions;
+            DROP TABLE IF EXISTS Words;
+            DROP TABLE IF EXISTS Definitions;""";
 
     private final String INSERT_DATA = """
             INSERT INTO Words VALUES (1, "extraordinary");
@@ -91,30 +91,42 @@ public class Database {
                         
             INSERT INTO Words_Lists VALUES (2, "second list");
             INSERT INTO Words_List_Items VALUES (2, 2);
-            INSERT INTO Words_List_Items VALUES (2, 4);
-            """;
+            INSERT INTO Words_List_Items VALUES (2, 4);""";
 
     public Database() {
-        this.connection = this.createConnection();
+        this(false);
     }
 
-    public Database(boolean createSchema) {
-        this();
-        if (createSchema) {
+    public Database(boolean testMode) {
+        this.connection = this.createConnection(testMode);
+        if (!testMode) {
             this.createSchemaIfNotExists();
             this.insertData();
         }
-
-
-
     }
 
-    private void insertData() {
-        try (PreparedStatement pstmt = this.connection.prepareStatement(INSERT_DATA)) {
-            pstmt.executeUpdate();
+    public void insertData() {
+        String[] queries = INSERT_DATA.split(";");
+        try (Statement statement = this.connection.createStatement()) {
+            for (String query : queries) {
+                statement.execute(query);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean dropAllTables() {
+        boolean result = true;
+        String[] queries = DROP_ALL_TABLES.split(";");
+        try (Statement statement = this.connection.createStatement()) {
+            for (String query : queries) {
+                result &= statement.execute(query);
+            }
+        }  catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public void queryDatabase(String query) {
@@ -331,7 +343,7 @@ public class Database {
     //    return true;
     //}
 
-    private void createSchemaIfNotExists() {
+    public void createSchemaIfNotExists() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(CREATE_DB_SQL);
         } catch (SQLException e) {
@@ -341,6 +353,10 @@ public class Database {
 
      private Connection createConnection() {
         String url = ConfigLoader.getInstance().getProperty("jdbc.url");
+        return this.createConnection(url);
+    }
+
+    private Connection createConnection(String url) {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url);
@@ -350,11 +366,12 @@ public class Database {
         return connection;
     }
 
-    private Connection createConnection(boolean testMode) {
+    public Connection createConnection(boolean testMode) {
         if (!testMode) {
             return this.createConnection();
         } else {
-
+            String url = ConfigLoader.getInstance().getProperty("test.jdbc.url");
+            return this.createConnection(url);
         }
     }
 

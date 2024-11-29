@@ -18,14 +18,39 @@ public class DatabaseTest {
 
 
     @BeforeEach
-    void setUp() throws SQLException {
-        database = new Database();
+    void setUp() {
+        database = new Database(true);
+        database.createSchemaIfNotExists();
+        database.insertData();
+    }
+
+    @AfterEach
+    void clear() {
+        database.dropAllTables();
+    }
 
 
+
+    @Test
+    public void shouldNotContainNotAddedWordsAfterInsertData() {
+        assertFalse(database.exists("is"));
+        assertFalse(database.exists("be"));
+        assertFalse(database.exists("car"));
+
+        assertFalse(database.exists("marke"));
+        assertFalse(database.exists("extraordinaryy"));
     }
 
     @Test
-    public void testExists_whenHeadwordExists_returnsTrue() {
+    public void shouldContainWordsAfterInsertData() {
+        assertTrue(database.exists("extraordinary"));
+        assertTrue(database.exists("fluent"));
+        assertTrue(database.exists("art"));
+        assertTrue(database.exists("market"));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenHeadwordExists() {
         // Zakładając, że w tabeli words istnieje headword "extraordinary"
         String headword = "extraordinary";
 
@@ -37,7 +62,7 @@ public class DatabaseTest {
     }
 
     @Test
-    public void testExists_whenHeadwordDoesNotExist_returnsFalse() {
+    public void shouldReturnFalseWhenHeadwordDoesNotExist() {
         String headword = "elephant";
         boolean result = database.exists(headword);
         assertFalse(result, "exists(non existing word) should return false");
