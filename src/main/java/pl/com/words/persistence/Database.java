@@ -4,14 +4,18 @@ import pl.com.words.configuration.ConfigLoader;
 import pl.com.words.model.Word;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Database {
 
     public static void main(String[] args) {
         Database database = new Database(true);
+        //database.createSchemaIfNotExists();
+        //database.insertData();
+        System.out.println(database.getWord("art"));
+        System.out.println(database.getWord("extraordinary"));
+        System.out.println(database.getWord("market"));
+        System.out.println(database.getWord("fluent"));
 
 
         //
@@ -129,32 +133,9 @@ public class Database {
         return result;
     }
 
-    public void queryDatabase(String query) {
-        try (PreparedStatement pstmt = this.connection.prepareStatement(query)) {
-            try(ResultSet rs = pstmt.executeQuery()){
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    /*
-    addWord(Word word)
-    if (word.headrod exists in database) {
-        do nothing
-    } else {
-        // headword does not exist
-        database_word_id = insertIntoWords(headword)
-        insert definitions(word.definitions, database_word_id)
-
-    }
-
+    /**
+     * Method checks if given headword exists in database
      */
-
-    //check if given headword exists in database
     public boolean exists(String headword) {
         String query = "SELECT headword FROM Words WHERE headword = (?)";
         boolean result = false;
@@ -171,7 +152,53 @@ public class Database {
         return result;
     }
 
-    private boolean addWord(Word word) {
+    private static final String GET_WORD_WITH_DEFINITIONS_QUERY = """
+            SELECT Definitions.definition FROM Words
+            INNER JOIN Words_Definitions
+            ON Words.id = Words_Definitions.word_id
+            INNER JOIN Definitions
+            ON Words_Definitions.definition_id = Definitions.id
+            WHERE Words.headword = (?);""";
+
+    public Optional<WordRecord> getWord(String headword) {
+        Optional<WordRecord> result = Optional.empty();
+        if (this.exists(headword)) {
+            WordRecord retrievedWord;
+            Set<String> definitions = retrieveDefinitions(headword);
+            retrievedWord = new WordRecord(headword, definitions);
+            result = Optional.of(retrievedWord);
+        }
+        return result;
+    }
+
+    private Set<String> retrieveDefinitions(String headword) {
+        Set<String> definitionsSet = new HashSet<>();
+        try (PreparedStatement getDefinitionsStatement = connection.prepareStatement(GET_WORD_WITH_DEFINITIONS_QUERY)) {
+            getDefinitionsStatement.setString(1, headword);
+            ResultSet rs = getDefinitionsStatement.executeQuery();
+            while (rs.next()) {
+                definitionsSet.add(rs.getString("definition"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return definitionsSet;
+    }
+
+     /*
+    addWord(Word word)
+    if (word.headrod exists in database) {
+        do nothing
+    } else {
+        // headword does not exist
+        database_word_id = insertIntoWords(headword)
+        insert definitions(word.definitions, database_word_id)
+
+    }
+
+     */
+
+    public boolean addWord(WordRecord word) {
         String INSERT_WORD_SQL = """
                 INSERT OR IGNORE INTO Words(headword)
                 VALUES (?);
@@ -183,7 +210,7 @@ public class Database {
                 """;
         String INSERT_WORDS_DEFINITIONS_SQL;
 
-        String headword = word.getHeadword();
+        String headword = word.headword();
 
         if (this.exists(headword)) {
             return false;
@@ -197,7 +224,7 @@ public class Database {
             int updatedRows = insertIntoWords.executeUpdate();
             if (updatedRows != 0) {
                 //insert all definitions
-                insertDefinitions(word.getDefinitions());
+                //insertDefinitions(word.definitions());
             }
 
         } catch (SQLException e) {
