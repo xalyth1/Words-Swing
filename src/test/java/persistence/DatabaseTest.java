@@ -11,9 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,6 +33,66 @@ public class DatabaseTest {
         database.dropAllTables();
     }
 
+
+    public List<Long> insert3ExemplaryDefinitions() {
+        List<String> definitionsToAdd = new ArrayList<>();
+        definitionsToAdd.add("samochód");
+        definitionsToAdd.add("rower");
+        definitionsToAdd.add("pojazd");
+
+        List<Long> ids = null;
+
+        try {
+            ids = database.insertDefinitions(definitionsToAdd);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    @Test
+    public void test_insertDefinitions_ShouldReturnProperIdsOfInsertedDefinitios() {
+        List<String> definitionsToAdd = new ArrayList<>();
+        definitionsToAdd.add("samochód");
+        definitionsToAdd.add("rower");
+        definitionsToAdd.add("pojazd");
+
+        List<Long> ids = null;
+
+        try {
+            ids = database.insertDefinitions(definitionsToAdd);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+
+        assertNotNull(ids);
+        assertEquals(ids.size(), 3);
+
+        String SQL = "SELECT definition FROM Definitions WHERE id = (?)";
+
+        List<String> retriedDefinitions = new ArrayList<>();
+        try (PreparedStatement pstmt = database.getConnection().prepareStatement(SQL)) {
+            for (Long id : ids) {
+                pstmt.setLong(1, id);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    retriedDefinitions.add(rs.getString("definition"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(retriedDefinitions, definitionsToAdd);
+    }
+
+    @Test
+    public void test_insertDefinitions_ShouldReturnListOfIds() {
+        List<Long> ids = insert3ExemplaryDefinitions();
+
+        assertNotNull(ids);
+        assertEquals(ids.size(), 3);
+    }
 
     @Test
     public void test_insertDefinitions_ReturnedIdShouldPointToDefinition() {
@@ -60,7 +118,6 @@ public class DatabaseTest {
         }
         assertNotNull(retrieveDefinition);
         assertEquals(retrieveDefinition, definitionToBeAdded);
-
     }
 
     @Test

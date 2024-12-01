@@ -246,8 +246,8 @@ public class Database {
      * @param definitions - list of dictionary definitions to insert into Definitions Table
      * @return List of inserted rows IDs database Definitions Table
      */
-    private List<Integer> insertDefinitions(List<String> definitions) {
-        List<Integer> ids = new ArrayList<>();
+    public List<Long> insertDefinitions(List<String> definitions) throws DatabaseException {
+        List<Long> ids = new ArrayList<>();
 
         String INSERT_DEFINITION_SQL = """
                 INSERT OR IGNORE INTO Definitions(definition)
@@ -262,21 +262,17 @@ public class Database {
             for (String definition : definitions) {
                 insertAllDefinitions.setString(1, definition);
                 int updatedRows = insertAllDefinitions.executeUpdate();
-                if (updatedRows == 0) {
-                    selectDefinition.setString(1, definition);
-                    ResultSet rs = selectDefinition.executeQuery();
-                    if (rs.next()) {
-                        //TODO
-
-                    }
-                } else {
-
+                Optional<Long> id = getIdOfInsertedDefinition(updatedRows, insertAllDefinitions, selectDefinition, definition);
+                if (id.isPresent()) {
+                    ids.add(id.orElseThrow());
                 }
+
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return ids;
     }
 
     public Optional<Long> insertDefinition(String definition) throws DatabaseException {
@@ -313,6 +309,32 @@ public class Database {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        return id;
+    }
+
+    private Optional<Long> getIdOfInsertedDefinition(int updatedRows,
+                                             PreparedStatement insertDefinitionPStmt,
+                                             PreparedStatement selectDefinitionPStmt,
+                                             String definition) throws SQLException, DatabaseException {
+        Optional<Long> id = Optional.empty();
+        if (updatedRows == 0) { // definition already exist
+            selectDefinitionPStmt.setString(1, definition);
+            ResultSet rs = selectDefinitionPStmt.executeQuery();
+            if (rs.next()) {
+                long defId = rs.getInt("id");
+                id = Optional.of(defId);
+                if (rs.next()) {
+                    // Result set has more than 1 value - Unexpected database consistency problem
+                    throw new DatabaseException("Unexpected database behavior. ResultSet has more than one value");
+                }
+            }
+        } else {
+            ResultSet generatedKeys = insertDefinitionPStmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long generatedId = generatedKeys.getLong(1);
+                id = Optional.of(generatedId);
+            }
         }
         return id;
     }
