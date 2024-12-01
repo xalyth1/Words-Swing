@@ -12,10 +12,11 @@ public class Database {
         Database database = new Database(true);
         //database.createSchemaIfNotExists();
         //database.insertData();
-        System.out.println(database.getWord("art"));
-        System.out.println(database.getWord("extraordinary"));
-        System.out.println(database.getWord("market"));
-        System.out.println(database.getWord("fluent"));
+        database.dropAllTables();
+        //System.out.println(database.getWord("art"));
+        //System.out.println(database.getWord("extraordinary"));
+        //System.out.println(database.getWord("market"));
+        //System.out.println(database.getWord("fluent"));
 
 
         //
@@ -198,17 +199,24 @@ public class Database {
 
      */
 
-    public boolean addWord(WordRecord word) {
-        String INSERT_WORD_SQL = """
+    private static final String INSERT_WORD_SQL = """
                 INSERT OR IGNORE INTO Words(headword)
                 VALUES (?);
                 """;
 
-        String INSERT_DEFINITION_SQL = """
+    private static final String INSERT_DEFINITIONS_SQL = """
                 INSERT OR IGNORE INTO Definitions(definition)
                 VALUES(?);
                 """;
-        String INSERT_WORDS_DEFINITIONS_SQL;
+
+    private static final String INSERT_WORDS_DEFINITIONS_SQ = """
+                
+                """;
+
+    public boolean addWord(WordRecord word) {
+        if (this.exists(word.headword())) {
+            return true;
+        }
 
         String headword = word.headword();
 
@@ -218,7 +226,7 @@ public class Database {
 
 
         try (PreparedStatement insertIntoWords = connection.prepareStatement(INSERT_WORD_SQL);
-             PreparedStatement insertDefinition = connection.prepareStatement(INSERT_DEFINITION_SQL)){
+             PreparedStatement insertDefinition = connection.prepareStatement(INSERT_DEFINITIONS_SQL)){
             //Insert into words
             insertIntoWords.setString(1, headword);
             int updatedRows = insertIntoWords.executeUpdate();
@@ -271,7 +279,7 @@ public class Database {
         return null;
     }
 
-    private Optional<Long> insertDefinition(String definition) throws DatabaseException {
+    public Optional<Long> insertDefinition(String definition) throws DatabaseException {
         Optional<Long> id = Optional.empty();
         String INSERT_DEFINITION_SQL = """
                 INSERT OR IGNORE INTO Definitions(definition)

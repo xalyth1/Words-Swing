@@ -3,8 +3,10 @@ package persistence;
 import org.junit.jupiter.api.*;
 import pl.com.words.model.Word;
 import pl.com.words.persistence.Database;
+import pl.com.words.persistence.DatabaseException;
 import pl.com.words.persistence.WordRecord;
 
+import javax.swing.text.html.Option;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,6 +35,33 @@ public class DatabaseTest {
         database.dropAllTables();
     }
 
+
+    @Test
+    public void test_insertDefinitions_ReturnedIdShouldPointToDefinition() {
+        String definitionToBeAdded = "samochód";
+        Optional<Long> opt = Optional.empty();
+        try {
+            opt = database.insertDefinition(definitionToBeAdded);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+        assertTrue(opt.isPresent());
+
+        String GET_DEFINITION = "SELECT definition FROM Definitions WHERE id = (?)";
+        String retrieveDefinition = null;
+        try (PreparedStatement preparedStatement = database.getConnection().prepareStatement(GET_DEFINITION)) {
+            preparedStatement.setLong(1, opt.orElseThrow());
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()){
+                retrieveDefinition = rs.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        assertNotNull(retrieveDefinition);
+        assertEquals(retrieveDefinition, definitionToBeAdded);
+
+    }
 
     @Test
     public void shouldHaveProperDefinitionsForExistingWords() {
