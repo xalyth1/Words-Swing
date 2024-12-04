@@ -34,6 +34,40 @@ public class DatabaseTest {
     }
 
 
+    @Test
+    public void test_addWord_ShouldAddNewWordWithTableReferentialIntegrity() {
+        WordRecord wr = new WordRecord("brilliant", Set.of("jasny", "genialny"));
+        database.addWord(wr);
+        WordRecord result = database.getWord(wr.headword()).orElseThrow();
+        assertEquals(wr, result);
+
+
+    }
+
+    @Test
+    public void test_insertIntoWordsDefinitions_ShouldReturnId() {
+        Optional<Long> result = database.insertIntoWordsDefinitions(5L,7L);
+        assertTrue(result.isPresent());
+        assertEquals(7L, result.orElseThrow());
+
+    }
+
+    @Test
+    public void test_insertIntoWords_ShouldReturnIdOfNewlyAddedHeadword() {
+        Optional<Long> id = database.insertIntoWords("independent");
+        assertTrue(id.isPresent());
+        assertEquals(id.orElseThrow(), 5);
+    }
+
+    @Test
+    public void test_insertIntoWords_ShouldReturnIdOfExistingHeadwordInTable() {
+        Optional<Long> id = database.insertIntoWords("market");
+
+        assertTrue(id.isPresent());
+        assertEquals(id.orElseThrow(), 4);
+    }
+
+
     public List<Long> insert3ExemplaryDefinitions() {
         List<String> definitionsToAdd = new ArrayList<>();
         definitionsToAdd.add("samochód");

@@ -199,19 +199,14 @@ public class Database {
 
      */
 
-    private static final String INSERT_WORD_SQL = """
-                INSERT OR IGNORE INTO Words(headword)
-                VALUES (?);
-                """;
+
 
     private static final String INSERT_DEFINITIONS_SQL = """
                 INSERT OR IGNORE INTO Definitions(definition)
                 VALUES(?);
                 """;
 
-    private static final String INSERT_WORDS_DEFINITIONS_SQ = """
-                
-                """;
+
 
     public boolean addWord(WordRecord word) {
         if (this.exists(word.headword())) {
@@ -220,25 +215,79 @@ public class Database {
 
         String headword = word.headword();
 
-        if (this.exists(headword)) {
-            return false;
+        try {
+            connection.setAutoCommit(false);
+
+            //1. insert definitions
+            List<Long> definitions_ids = this.insertDefinitions(word.definitions().stream().toList());
+
+            //2. Insert into words
+            Long word_id = this.insertIntoWords(headword).orElseThrow();
+
+            //3. insert into WordsDefintions
+            for(Long definition_id : definitions_ids) {
+                this.insertIntoWordsDefinitions(word_id, definition_id);
+            }
+            connection.commit();
+
+        } catch (SQLException | DatabaseException e) {
+            try {
+                connection.rollback();
+                System.out.println("Transaction rolled back due to an error.");
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+            e.printStackTrace();
+
         }
 
+        return true;
+    }
 
+    public Optional<Long> insertIntoWordsDefinitions(Long word_id, Long definition_id) {
+        Optional<Long> id = Optional.empty();
+        final String INSERT_WORDS_DEFINITIONS_SQL = """
+                INSERT OR IGNORE INTO Words_Definitions(word_id, definition_id)
+                VALUES(?, ?) RETURNING id;
+                """;
+        try (PreparedStatement insertIntoWords = connection.prepareStatement(INSERT_WORDS_DEFINITIONS_SQL)) {
+            insertIntoWords.setLong(1, word_id);
+            insertIntoWords.setLong(2, definition_id);
+            ResultSet rs = insertIntoWords.executeQuery();
+            if (rs.next()) {
+                id = Optional.of(rs.getLong("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+
+    public Optional<Long> insertIntoWords(String headword) {
+        Optional<Long> id = Optional.empty();
+        final String INSERT_WORD_SQL = """
+                INSERT OR IGNORE INTO Words(headword)
+                VALUES (?);
+                """;
+        final String SELECT_FROM_WORDS = """
+                SELECT id FROM Words WHERE headword = (?)""";
         try (PreparedStatement insertIntoWords = connection.prepareStatement(INSERT_WORD_SQL);
-             PreparedStatement insertDefinition = connection.prepareStatement(INSERT_DEFINITIONS_SQL)){
-            //Insert into words
+             PreparedStatement selectId = connection.prepareStatement(SELECT_FROM_WORDS)) {
             insertIntoWords.setString(1, headword);
-            int updatedRows = insertIntoWords.executeUpdate();
-            if (updatedRows != 0) {
-                //insert all definitions
-                //insertDefinitions(word.definitions());
+            insertIntoWords.executeUpdate();
+
+            selectId.setString(1, headword);
+            ResultSet rs = selectId.executeQuery();
+            if (rs.next()) {
+                id = Optional.of(rs.getLong("id"));
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true;
+        return id;
     }
 
     /**
