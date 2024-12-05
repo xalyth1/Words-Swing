@@ -1,7 +1,6 @@
 package pl.com.words.persistence;
 
 import pl.com.words.configuration.ConfigLoader;
-import pl.com.words.model.Word;
 
 import java.sql.*;
 import java.util.*;
@@ -10,23 +9,8 @@ public class Database {
 
     public static void main(String[] args) {
         Database database = new Database(true);
-        //database.createSchemaIfNotExists();
-        //database.insertData();
-        database.dropAllTables();
-        //System.out.println(database.getWord("art"));
-        //System.out.println(database.getWord("extraordinary"));
-        //System.out.println(database.getWord("market"));
-        //System.out.println(database.getWord("fluent"));
-
-
-        //
-        //Word word = new Word("heat", List.of("upał"));
-        //
-        ////database.addWord(word);
-        //database.delete(1);
-
+        database.createSchemaIfNotExists();
     }
-
 
     private Connection connection = null;
 
@@ -110,28 +94,45 @@ public class Database {
         }
     }
 
-    public void insertData() {
-        String[] queries = INSERT_DATA.split(";");
-        try (Statement statement = this.connection.createStatement()) {
-            for (String query : queries) {
-                statement.execute(query);
+    private boolean doesTableExist(String tableName) {
+        String query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
+
+        try (PreparedStatement statement = this.getConnection().prepareStatement(query)) {
+            statement.setString(1, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next(); // Returns true if the table exists
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
-    public boolean dropAllTables() {
+    public void insertData() {
+        String[] queries = INSERT_DATA.split(";");
+        String currentQuery="";
+        try (Statement statement = this.connection.createStatement()) {
+            for (String query : queries) {
+                currentQuery = query;
+                statement.execute(query);
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Exception while executing currentQuery: " + currentQuery);
+            e.printStackTrace();
+        }
+    }
+
+    public void dropAllTables() {
         boolean result = true;
         String[] queries = DROP_ALL_TABLES.split(";");
         try (Statement statement = this.connection.createStatement()) {
             for (String query : queries) {
-                result &= statement.execute(query);
+                statement.execute(query.trim()+";");
             }
         }  catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
     }
 
     /**
@@ -186,50 +187,27 @@ public class Database {
         return definitionsSet;
     }
 
-     /*
-    addWord(Word word)
-    if (word.headrod exists in database) {
-        do nothing
-    } else {
-        // headword does not exist
-        database_word_id = insertIntoWords(headword)
-        insert definitions(word.definitions, database_word_id)
-
-    }
-
-     */
-
-
-
     private static final String INSERT_DEFINITIONS_SQL = """
                 INSERT OR IGNORE INTO Definitions(definition)
                 VALUES(?);
                 """;
 
-
-
     public boolean addWord(WordRecord word) {
         if (this.exists(word.headword())) {
             return true;
         }
-
         String headword = word.headword();
-
         try {
             connection.setAutoCommit(false);
-
             //1. insert definitions
             List<Long> definitions_ids = this.insertDefinitions(word.definitions().stream().toList());
-
             //2. Insert into words
             Long word_id = this.insertIntoWords(headword).orElseThrow();
-
             //3. insert into WordsDefintions
             for(Long definition_id : definitions_ids) {
                 this.insertIntoWordsDefinitions(word_id, definition_id);
             }
             connection.commit();
-
         } catch (SQLException | DatabaseException e) {
             try {
                 connection.rollback();
@@ -237,11 +215,8 @@ public class Database {
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
-
             e.printStackTrace();
-
         }
-
         return true;
     }
 
@@ -264,7 +239,6 @@ public class Database {
         return id;
     }
 
-
     public Optional<Long> insertIntoWords(String headword) {
         Optional<Long> id = Optional.empty();
         final String INSERT_WORD_SQL = """
@@ -283,7 +257,6 @@ public class Database {
             if (rs.next()) {
                 id = Optional.of(rs.getLong("id"));
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -302,10 +275,10 @@ public class Database {
                 INSERT OR IGNORE INTO Definitions(definition)
                 VALUES(?);
                 """;
-
         String SELECT_DEFINITION = """
                 SELECT id FROM Definitions WHERE definition = (?);
                 """;
+
         try (PreparedStatement insertAllDefinitions = connection.prepareStatement(INSERT_DEFINITION_SQL);
              PreparedStatement selectDefinition = connection.prepareStatement(SELECT_DEFINITION)) {
             for (String definition : definitions) {
@@ -315,8 +288,6 @@ public class Database {
                 if (id.isPresent()) {
                     ids.add(id.orElseThrow());
                 }
-
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -354,7 +325,6 @@ public class Database {
                     long generatedId = generatedKeys.getLong(1);
                     id = Optional.of(generatedId);
                 }
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -476,7 +446,8 @@ public class Database {
         if (!testMode) {
             return this.createConnection();
         } else {
-            String url = ConfigLoader.getInstance().getProperty("test.jdbc.url");
+            //String url = ConfigLoader.getInstance().getProperty("test.jdbc.url");
+            String url = "jdbc:sqlite::memory:";
             return this.createConnection(url);
         }
     }

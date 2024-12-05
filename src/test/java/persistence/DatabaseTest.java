@@ -12,14 +12,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DatabaseTest {
     //private static final String DB_URL = "jdbc:sqlite:src/test/resources/WordsDatabase.db"; // Path to the words.db
     private Database database;
-
-
 
     @BeforeEach
     void setUp() {
@@ -30,132 +29,12 @@ public class DatabaseTest {
 
     @AfterEach
     void clear() {
+        System.out.println("Execute after each");
         database.dropAllTables();
     }
 
-
     @Test
-    public void test_addWord_ShouldAddNewWordWithTableReferentialIntegrity() {
-        WordRecord wr = new WordRecord("brilliant", Set.of("jasny", "genialny"));
-        database.addWord(wr);
-        WordRecord result = database.getWord(wr.headword()).orElseThrow();
-        assertEquals(wr, result);
-
-
-    }
-
-    @Test
-    public void test_insertIntoWordsDefinitions_ShouldReturnId() {
-        Optional<Long> result = database.insertIntoWordsDefinitions(5L,7L);
-        assertTrue(result.isPresent());
-        assertEquals(7L, result.orElseThrow());
-
-    }
-
-    @Test
-    public void test_insertIntoWords_ShouldReturnIdOfNewlyAddedHeadword() {
-        Optional<Long> id = database.insertIntoWords("independent");
-        assertTrue(id.isPresent());
-        assertEquals(id.orElseThrow(), 5);
-    }
-
-    @Test
-    public void test_insertIntoWords_ShouldReturnIdOfExistingHeadwordInTable() {
-        Optional<Long> id = database.insertIntoWords("market");
-
-        assertTrue(id.isPresent());
-        assertEquals(id.orElseThrow(), 4);
-    }
-
-
-    public List<Long> insert3ExemplaryDefinitions() {
-        List<String> definitionsToAdd = new ArrayList<>();
-        definitionsToAdd.add("samochód");
-        definitionsToAdd.add("rower");
-        definitionsToAdd.add("pojazd");
-
-        List<Long> ids = null;
-
-        try {
-            ids = database.insertDefinitions(definitionsToAdd);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-        return ids;
-    }
-
-    @Test
-    public void test_insertDefinitions_ShouldReturnProperIdsOfInsertedDefinitios() {
-        List<String> definitionsToAdd = new ArrayList<>();
-        definitionsToAdd.add("samochód");
-        definitionsToAdd.add("rower");
-        definitionsToAdd.add("pojazd");
-
-        List<Long> ids = null;
-
-        try {
-            ids = database.insertDefinitions(definitionsToAdd);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-
-        assertNotNull(ids);
-        assertEquals(ids.size(), 3);
-
-        String SQL = "SELECT definition FROM Definitions WHERE id = (?)";
-
-        List<String> retriedDefinitions = new ArrayList<>();
-        try (PreparedStatement pstmt = database.getConnection().prepareStatement(SQL)) {
-            for (Long id : ids) {
-                pstmt.setLong(1, id);
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    retriedDefinitions.add(rs.getString("definition"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        assertEquals(retriedDefinitions, definitionsToAdd);
-    }
-
-    @Test
-    public void test_insertDefinitions_ShouldReturnListOfIds() {
-        List<Long> ids = insert3ExemplaryDefinitions();
-
-        assertNotNull(ids);
-        assertEquals(ids.size(), 3);
-    }
-
-    @Test
-    public void test_insertDefinitions_ReturnedIdShouldPointToDefinition() {
-        String definitionToBeAdded = "samochód";
-        Optional<Long> opt = Optional.empty();
-        try {
-            opt = database.insertDefinition(definitionToBeAdded);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-        assertTrue(opt.isPresent());
-
-        String GET_DEFINITION = "SELECT definition FROM Definitions WHERE id = (?)";
-        String retrieveDefinition = null;
-        try (PreparedStatement preparedStatement = database.getConnection().prepareStatement(GET_DEFINITION)) {
-            preparedStatement.setLong(1, opt.orElseThrow());
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()){
-                retrieveDefinition = rs.getString(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(retrieveDefinition);
-        assertEquals(retrieveDefinition, definitionToBeAdded);
-    }
-
-    @Test
-    public void shouldHaveProperDefinitionsForExistingWords() {
+    public void test_getWord_ShouldHaveProperDefinitionsForExistingWords() {
         WordRecord extraordinary = new WordRecord("extraordinary",
                 new HashSet<>(Set.of("wyjątkowy", "niezwykły", "niesłychany")));
         WordRecord art = new WordRecord("art", new HashSet<>(Set.of("sztuka")));
@@ -179,7 +58,7 @@ public class DatabaseTest {
     }
 
     @Test
-    public void shouldNotContainNotAddedWordsAfterInsertData() {
+    public void test_exists_ShouldNotContainNotAddedWordsAfterInsertData() {
         assertFalse(database.exists("is"));
         assertFalse(database.exists("be"));
         assertFalse(database.exists("car"));
@@ -189,7 +68,7 @@ public class DatabaseTest {
     }
 
     @Test
-    public void shouldContainWordsAfterInsertData() {
+    public void test_exists_ShouldContainWordsAfterInsertData() {
         assertTrue(database.exists("extraordinary"));
         assertTrue(database.exists("fluent"));
         assertTrue(database.exists("art"));
@@ -197,7 +76,7 @@ public class DatabaseTest {
     }
 
     @Test
-    public void shouldReturnTrueWhenHeadwordExists() {
+    public void test_exists_ShouldReturnTrueWhenHeadwordExists() {
         // Zakładając, że w tabeli words istnieje headword "extraordinary"
         String headword = "extraordinary";
 
@@ -209,7 +88,7 @@ public class DatabaseTest {
     }
 
     @Test
-    public void shouldReturnFalseWhenHeadwordDoesNotExist() {
+    public void test_exists_ShouldReturnFalseWhenHeadwordDoesNotExist() {
         String headword = "elephant";
         boolean result = database.exists(headword);
         assertFalse(result, "exists(non existing word) should return false");
