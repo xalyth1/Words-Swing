@@ -16,6 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import static persistence.TestUtil.doesTableExist;
+import static persistence.TestUtil.tableNames;
+
 public class DatabaseTest {
     //private static final String DB_URL = "jdbc:sqlite:src/test/resources/WordsDatabase.db"; // Path to the words.db
     private Database database;
@@ -29,9 +32,24 @@ public class DatabaseTest {
 
     @AfterEach
     void clear() {
-        System.out.println("Execute after each");
         database.dropAllTables();
     }
+
+    //private boolean doesTableExist(String tableName) {
+    //    String query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
+    //
+    //    try (PreparedStatement statement = database.getConnection().prepareStatement(query)) {
+    //        statement.setString(1, tableName);
+    //        try (ResultSet resultSet = statement.executeQuery()) {
+    //            return resultSet.next(); // Returns true if the table exists
+    //        }
+    //    } catch (SQLException e) {
+    //        e.printStackTrace();
+    //    }
+    //    return false;
+    //}
+
+
 
     @Test
     public void test_getWord_ShouldHaveProperDefinitionsForExistingWords() {
@@ -92,6 +110,27 @@ public class DatabaseTest {
         String headword = "elephant";
         boolean result = database.exists(headword);
         assertFalse(result, "exists(non existing word) should return false");
+    }
+
+    @Test
+    public void test_dropAllTables_ShouldNotThrowExceptionIfNoSchema() {
+        database = new Database(true);
+        assertDoesNotThrow(() -> database.dropAllTables());
+    }
+
+    @Test
+    public void test_dropAllTables_TablesShouldNotExistAfterDrop() {
+        database.dropAllTables();
+        for (String tableName : tableNames) {
+            assertFalse(doesTableExist(database, tableName));
+        }
+    }
+
+    @Test
+    public void test_Database_TablesShouldExistAfterDBInit() {
+        for (String tableName : tableNames) {
+            assertTrue(doesTableExist(database, tableName));
+        }
     }
 
 }

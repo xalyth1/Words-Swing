@@ -29,19 +29,7 @@ public class InsertDataTest {
         database.insertData();
     }
 
-    private boolean doesTableExist(String tableName) {
-        String query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
 
-        try (PreparedStatement statement = database.getConnection().prepareStatement(query)) {
-            statement.setString(1, tableName);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next(); // Returns true if the table exists
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
 
     @Test
@@ -130,10 +118,6 @@ public class InsertDataTest {
         assertEquals(retrieveDefinition, definitionToBeAdded);
     }
 
-
-    //------
-
-
     @Test
     public void test_addWord_ShouldAddNewWordWithTableReferentialIntegrity() {
         WordRecord wr = new WordRecord("brilliant", Set.of("jasny", "genialny"));
@@ -172,12 +156,4 @@ public class InsertDataTest {
 
         database.dropAllTables();
     }
-    //------------------------------------------------------------------
-
-    @Test
-    public void test_dropAllTables_ShouldNotThrowExceptionIfNoSchema() {
-        database = new Database(true);
-        assertDoesNotThrow(() -> database.dropAllTables());
-    }
-
 }

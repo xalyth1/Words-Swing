@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static persistence.TestUtil.tableNames;
+import static persistence.TestUtil.doesTableExist;
+
 
 /**
  * Test class which is testing schema-related database methods
@@ -17,33 +19,33 @@ import static persistence.TestUtil.tableNames;
 public class SchemaTest {
     private Database database;
 
-    private boolean doesTableExist(String tableName) {
-        String query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
-
-        try (PreparedStatement statement = database.getConnection().prepareStatement(query)) {
-            statement.setString(1, tableName);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next(); // Returns true if the table exists
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+    //private boolean doesTableExist(String tableName) {
+    //    String query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
+    //
+    //    try (PreparedStatement statement = database.getConnection().prepareStatement(query)) {
+    //        statement.setString(1, tableName);
+    //        try (ResultSet resultSet = statement.executeQuery()) {
+    //            return resultSet.next(); // Returns true if the table exists
+    //        }
+    //    } catch (SQLException e) {
+    //        e.printStackTrace();
+    //    }
+    //    return false;
+    //}
 
     @Test
     public void test_SchemaCreationAndDeletion() {
         database = new Database(true);
         for (String tableName : tableNames) {
-            assertFalse(this.doesTableExist(tableName));
+            assertFalse(doesTableExist(database, tableName));
         }
         database.createSchemaIfNotExists();
         for (String tableName : tableNames) {
-            assertTrue(this.doesTableExist(tableName));
+            assertTrue(doesTableExist(database, tableName));
         }
         database.dropAllTables();
         for (String tableName : tableNames) {
-            assertFalse(this.doesTableExist(tableName));
+            assertFalse(doesTableExist(database, tableName));
         }
     }
 
@@ -53,9 +55,8 @@ public class SchemaTest {
         database.dropAllTables();
         database.createSchemaIfNotExists();
         for (String tableName : tableNames) {
-            assertTrue(this.doesTableExist(tableName));
+            assertTrue(doesTableExist(database, tableName));
         }
-
         database.dropAllTables();
     }
 
@@ -63,7 +64,7 @@ public class SchemaTest {
     public void test_Database_NewlyCreatedDatabaseObjectShouldNotContainSchema() {
         database = new Database(true);
         for (String tableName : tableNames) {
-            assertFalse(this.doesTableExist(tableName));
+            assertFalse(doesTableExist(database, tableName));
         }
     }
 }

@@ -13,7 +13,7 @@ import pl.com.words.gui.components.Menu;
  * This is Words-Swing Application GUI
  * (c) xalyth
  * Creation date: 01-04 - 2024
- * Updates and development: 07-10  -  2024
+ * Updates and development: 07-12  -  2024
  */
 public class GUI extends JFrame implements Runnable {
     private Model model;

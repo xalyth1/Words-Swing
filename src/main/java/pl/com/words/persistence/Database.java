@@ -94,20 +94,6 @@ public class Database {
         }
     }
 
-    private boolean doesTableExist(String tableName) {
-        String query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
-
-        try (PreparedStatement statement = this.getConnection().prepareStatement(query)) {
-            statement.setString(1, tableName);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next(); // Returns true if the table exists
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public void insertData() {
         String[] queries = INSERT_DATA.split(";");
         String currentQuery="";
@@ -193,21 +179,23 @@ public class Database {
                 """;
 
     public boolean addWord(WordRecord word) {
+        boolean operationResult;
         if (this.exists(word.headword())) {
             return true;
         }
         String headword = word.headword();
         try {
             connection.setAutoCommit(false);
-            //1. insert definitions
+            //1. Insert Definitions
             List<Long> definitions_ids = this.insertDefinitions(word.definitions().stream().toList());
-            //2. Insert into words
+            //2. Insert into Words
             Long word_id = this.insertIntoWords(headword).orElseThrow();
-            //3. insert into WordsDefintions
+            //3. Insert into WordsDefinitions
             for(Long definition_id : definitions_ids) {
                 this.insertIntoWordsDefinitions(word_id, definition_id);
             }
             connection.commit();
+            operationResult = true;
         } catch (SQLException | DatabaseException e) {
             try {
                 connection.rollback();
@@ -216,8 +204,9 @@ public class Database {
                 exception.printStackTrace();
             }
             e.printStackTrace();
+            operationResult = false;
         }
-        return true;
+        return operationResult;
     }
 
     public Optional<Long> insertIntoWordsDefinitions(Long word_id, Long definition_id) {
@@ -358,21 +347,49 @@ public class Database {
         return id;
     }
 
-    private boolean delete(int wordId) {
-        //1. delete from Word_Definitions table
-        String DELETE_FROM_WORD_DEFINITIONS = """
+    /**
+     *
+     * Delete word and all related data(definitions, association table data)
+     *
+     */
+    public boolean delete(String headword) {
+        if (!this.exists(headword)) {
+            return false;
+        }
+        boolean operationResult = false;
+
+        final String GET_ID = """
+                SELECT id From Words WHERE headword = (?)""";
+
+        try (PreparedStatement getIdStmt = connection.prepareStatement(GET_ID)) {
+            getIdStmt.setString(1, headword);
+            ResultSet rs = getIdStmt.executeQuery();
+            if (rs.next()) {
+                long id = rs.getLong("id");
+                operationResult = this.delete(id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return operationResult;
+    }
+
+    private boolean delete(long wordId) {
+        boolean operationResult;
+        //1. Delete from Word_Definitions table
+        final String DELETE_FROM_WORD_DEFINITIONS = """
                 DELETE FROM Words_Definitions
                 WHERE Words_Definitions.word_id = ?;
                 """;
 
-        //2. delete from Word_List_Items table
-        String DELETE_FROM_WORD_LIST_ITEMS = """
+        //2. Delete from Word_List_Items table
+        final String DELETE_FROM_WORD_LIST_ITEMS = """
                 DELETE FROM Words_List_Items
                 WHERE Words_List_Items.word_id = ?;
                 """;
 
-        //3. delete from Words table
-        String DELETE_WORD_BY_ID = """
+        //3. Delete from Words table
+        final String DELETE_WORD_BY_ID = """
                 DELETE FROM Words
                 WHERE Words.id = ?;
                 """;
@@ -382,20 +399,31 @@ public class Database {
              PreparedStatement deleteWord = connection.prepareStatement(DELETE_WORD_BY_ID)) {
             connection.setAutoCommit(false);
 
-            deleteFromWordDefinitions.setInt(1, wordId);
+            //1. Delete from Word_Definitions table
+            deleteFromWordDefinitions.setLong(1, wordId);
             deleteFromWordDefinitions.executeUpdate();
 
-            deleteFromWordListItems.setInt(1, wordId);
+            //2. Delete from Word_List_Items table
+            deleteFromWordListItems.setLong(1, wordId);
             deleteFromWordListItems.executeUpdate();
 
-            deleteWord.setInt(1, wordId);
+            //3. Delete from Words table
+            deleteWord.setLong(1, wordId);
             deleteWord.executeUpdate();
 
             connection.commit();
+            operationResult = true;
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+                System.out.println("Transaction rolled back due to an error.");
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
             e.printStackTrace();
+            operationResult = false;
         }
-        return true;
+        return operationResult;
     }
 
 
