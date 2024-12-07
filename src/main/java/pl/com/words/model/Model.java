@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.com.words.api.WordsServiceApiClient;
 import pl.com.words.persistence.Database;
+import pl.com.words.persistence.WordRecord;
 
 public class Model {
     private List<WordsList> listOfWordsList;
@@ -30,9 +31,25 @@ public class Model {
 
     private List<WordsList> createFromDATABASE() {
         Database database = new Database();
-        //TODO START HERE BIND DB TO GUI
-        return null;
+        List<WordsList> list = new ArrayList<>();
+        HashMap<String, List<WordRecord>> hm = database.getAllListsOfWords();
+        for (String listName : hm.keySet()) {
+            WordsList wl = this.createWordsListFromDatabaseList(listName, hm.get(listName));
+            list.add(wl);
+        }
 
+        return list;
+
+    }
+
+    private WordsList createWordsListFromDatabaseList(String listName, List<WordRecord> listOfRecords) {
+        List<Word> list = new ArrayList<>();
+        for (WordRecord record : listOfRecords) {
+            Word word = new Word(record.headword(), record.definitions().stream().toList());
+            list.add(word);
+        }
+        WordsList wl = new WordsList(listName, list);
+        return wl;
     }
 
     private WordsList createInitialListWithExemplaryWords() {
