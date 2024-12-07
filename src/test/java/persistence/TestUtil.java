@@ -76,6 +76,50 @@ public class TestUtil {
         return result;
     }
 
+    public static boolean rowExistsInWordsDefinitionsTable(Database database, long id) {
+        final String query = "SELECT id, word_id, definition_id FROM Words_Definitions WHERE id = (?)";
+        boolean result;
+        try (PreparedStatement pstmt = database.getConnection().prepareStatement(query)) {
+            pstmt.setLong(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    result = true;
+                } else {
+                    result = false;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            result = false;
+        }
+        return result;
+    }
+
+    public static boolean rowExistsInWordListItemsTable(Database database, long words_list_id, long word_id) {
+        final String query = """
+                SELECT words_list_id, word_id 
+                FROM Words_List_Items 
+                WHERE words_list_id = (?)
+                AND word_id = (?);
+                """;
+        boolean result;
+        try (PreparedStatement pstmt = database.getConnection().prepareStatement(query)) {
+            pstmt.setLong(1, words_list_id);
+            pstmt.setLong(2, word_id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    result = true;
+                } else {
+                    result = false;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            result = false;
+        }
+        return result;
+    }
+
     //idea: Table as parameter !
     public static boolean rowExistsInTable(Database database, String tableName, String value) {
         String columnName = switch (tableName) {
