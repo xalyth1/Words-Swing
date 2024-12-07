@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.com.words.api.WordsServiceApiClient;
+import pl.com.words.persistence.Database;
 
 public class Model {
     private List<WordsList> listOfWordsList;
@@ -22,8 +23,16 @@ public class Model {
         this.listOfWordsList = new ArrayList<>();
         //this.listOfWordsList.add(this.loadWordsFromCSV());
 
-        this.listOfWordsList.add(createInitialListWithExemplaryWords());
+        //this.listOfWordsList.add(createInitialListWithExemplaryWords());
+        this.listOfWordsList = this.createFromDATABASE();
         this.currentList = listOfWordsList.get(0);
+    }
+
+    private List<WordsList> createFromDATABASE() {
+        Database database = new Database();
+        //TODO START HERE BIND DB TO GUI
+        return null;
+
     }
 
     private WordsList createInitialListWithExemplaryWords() {

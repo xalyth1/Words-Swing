@@ -8,8 +8,11 @@ import java.util.*;
 public class Database {
 
     public static void main(String[] args) {
-        Database database = new Database(true);
-        database.createSchemaIfNotExists();
+        Database database = new Database();
+
+
+        System.out.println(database.getAllListsOfWords());
+        database.dropAllTables();
     }
 
     private Connection connection = null;
@@ -120,6 +123,77 @@ public class Database {
         }  catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public HashMap<String, List<WordRecord>> getAllListsOfWords() {
+        HashMap<String, List<WordRecord>> result = new HashMap<>();
+
+        //1. get ids of all lists in database
+        HashMap<Long, String> listNames = getListNames();
+        //2. for each id of list, generate list of WordRecords and add them to result
+        for (Long listId : listNames.keySet()) {
+            List<WordRecord> list = getList(listId);
+            result.put(listNames.get(listId), list);
+        }
+        return result;
+    }
+
+    private List<WordRecord> getList(long id) {
+        List<WordRecord> list = new ArrayList<>();
+        final String getWordsSQL = "SELECT word_id FROM Words_List_Items WHERE words_list_id = (?)";
+        try (PreparedStatement stmt = this.getConnection().prepareStatement(getWordsSQL)) {
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                long word_id = rs.getLong("word_id");
+                Optional<WordRecord> wr = this.getWordRecord(word_id);
+                list.add(wr.orElseThrow());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     *
+     * @param id - Word'd id (Words table)
+     * @return WordRecord or empty
+     */
+    private Optional<WordRecord> getWordRecord(long id) {
+        String sql = "SELECT headword FROM Words WHERE id = (?)";
+        Optional<WordRecord> result = Optional.empty();
+        String headword = null;
+        try(PreparedStatement stmt = this.getConnection().prepareStatement(sql)) {
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                headword = rs.getString("headword");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (headword != null) {
+            result = this.getWord(headword);
+        }
+        return result;
+    }
+
+    private HashMap<Long, String> getListNames() {
+        final String selectLists = "SELECT id, name FROM Words_Lists";
+        HashMap<Long, String> result = new HashMap<>();
+        try (PreparedStatement stmt = this.getConnection().prepareStatement(selectLists)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String name = rs.getString("name");
+                result.put(id, name);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
