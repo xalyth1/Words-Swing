@@ -92,26 +92,26 @@ public class Model {
         return opt.get();
     }
 
-    /**
-     *
-     * @param headword - word to be searched
-     * @param listId - id of list on which the word will be searched
-     * @return
-     */
-    public Word search(String headword, int listId) {
-        WordsList list = this.listOfWordsList
-                .stream()
-                .filter(wl -> wl.getId() == listId)
-                .distinct()
-                .findFirst()
-                .get();
-
-
-        Optional<Word> opt = list.getList().stream()
-                .filter(w -> w.getHeadword().equals(headword))
-                .findFirst();
-        return opt.get();
-    }
+    ///**
+    // *
+    // * @param headword - word to be searched
+    // * @param listId - id of list on which the word will be searched
+    // * @return
+    // */
+    //public Word search(String headword, int listId) {
+    //    WordsList list = this.listOfWordsList
+    //            .stream()
+    //            .filter(wl -> wl.getId() == listId)
+    //            .distinct()
+    //            .findFirst()
+    //            .get();
+    //
+    //
+    //    Optional<Word> opt = list.getList().stream()
+    //            .filter(w -> w.getHeadword().equals(headword))
+    //            .findFirst();
+    //    return opt.get();
+    //}
 
 
     public void addWordToCurrentList(Word word) {

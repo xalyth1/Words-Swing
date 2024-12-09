@@ -11,7 +11,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Word implements Comparable<Word>{
+public final class Word implements Comparable<Word>{
     private static int NEXT_ID = 0;
     private final int id;
     private final String headword;

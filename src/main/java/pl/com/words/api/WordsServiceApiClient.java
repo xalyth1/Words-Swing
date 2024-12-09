@@ -1,8 +1,7 @@
 package pl.com.words.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pl.com.words.configuration.ConfigLoader;
 import pl.com.words.model.Word;
 
 import java.io.*;
@@ -12,12 +11,12 @@ import java.net.HttpURLConnection;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class WordsServiceApiClient {
-    private static final String pronunciationUrl = "http://localhost:8080/pronunciation/";
+    private final String apiUrl;// = "http://localhost:8080/pronunciation/";
+    private final String pronunciationUrl;
+    private final String wordUrl;
 
     public static void main(String[] args) {
         WordsServiceApiClient client = new WordsServiceApiClient();
@@ -26,12 +25,14 @@ public class WordsServiceApiClient {
     }
 
     public WordsServiceApiClient() {
-
+        this.apiUrl = ConfigLoader.getInstance().getProperty("words.service.url");
+        this.pronunciationUrl = this.apiUrl + "pronunciation/";
+        this.wordUrl = this.apiUrl + "word/";
     }
 
 
     public InputStream getPronunciation(String headword) {
-        String apiUrl = pronunciationUrl + headword;
+        String apiUrl = this.apiUrl + headword;
         InputStream mp3 = null;
         try {
             mp3 = fetchPronunciationFromApi(apiUrl);

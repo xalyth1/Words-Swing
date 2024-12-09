@@ -9,8 +9,6 @@ public class Database {
 
     public static void main(String[] args) {
         Database database = new Database();
-
-
         System.out.println(database.getAllListsOfWords());
         database.dropAllTables();
     }
@@ -114,7 +112,6 @@ public class Database {
     }
 
     public void dropAllTables() {
-        boolean result = true;
         String[] queries = DROP_ALL_TABLES.split(";");
         try (Statement statement = this.connection.createStatement()) {
             for (String query : queries) {

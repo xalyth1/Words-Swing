@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class ConfigLoader {
-    public static void main(String[] args) {
-        ConfigLoader configLoader = new ConfigLoader();
-        String x = configLoader.getProperty("jdbc.url");
-        System.out.println(x);
-    }
+public final class ConfigLoader {
+    //public static void main(String[] args) {
+    //    ConfigLoader configLoader = new ConfigLoader();
+    //    String x = configLoader.getProperty("jdbc.url");
+    //    System.out.println(x);
+    //}
 
     private static ConfigLoader configLoader = new ConfigLoader();
 
